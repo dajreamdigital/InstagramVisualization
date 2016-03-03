@@ -4,7 +4,7 @@ import pandas as pd
 from tabulate import tabulate
 
 base_url = 'https://api.instagram.com/v1'
-ACCESS_TOKEN = 'Please use your own access token'
+ACCESS_TOKEN = '254076680.1fb234f.30005cf6f33340c1955bba4ecfac03fa'
 
 query = 'atlanta'
 
