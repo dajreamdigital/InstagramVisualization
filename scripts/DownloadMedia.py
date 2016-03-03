@@ -18,24 +18,28 @@ for i in range(100000000):
 		rjson = r.json()
 		data = rjson['data']
 
-		if data['type'] != 'image':
-			continue
+		try:
+			if data['type'] != 'image':
+				continue
 
-		row = [data['filter'], \
-		data['comments']['count'],\
-		data['likes']['count'],\
-		data['location']['latitude'] if data['location'] else 'None',\
-		data['location']['longitude'] if data['location'] else 'None',\
-		data['location']['name'] if data['location'] else 'None',\
-		data['location']['id'] if data['location'] else 'None',\
-		data['created_time'],\
-		data['caption'],\
-		data['images']['standard_resolution']['url'],\
-		data['user']['username'],\
-		data['user']['full_name'],\
-		data['id'],\
-		data['link']]
-		writer.writerow([unicode(s).encode('utf-8') for s in row])
+			row = [data['filter'], \
+			data['comments']['count'],\
+			data['likes']['count'],\
+			data['location']['latitude'] if data['location'] else 'None',\
+			data['location']['longitude'] if data['location'] else 'None',\
+			data['location']['name'] if data['location'] else 'None',\
+			data['location']['id'] if data['location'] else 'None',\
+			data['created_time'],\
+			data['caption'],\
+			data['images']['standard_resolution']['url'],\
+			data['user']['username'],\
+			data['user']['full_name'],\
+			data['id'],\
+			data['link']]
+			writer.writerow([unicode(s).encode('utf-8') for s in row])
+		except Exception as e:
+			print e
+			
 	time.sleep(0.7)
 
 f.close()
