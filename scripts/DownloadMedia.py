@@ -5,13 +5,22 @@ base_url = 'https://api.instagram.com/v1'
 ACCESS_TOKEN = 'Use your own'
 
 
-f = open('instagramdata.csv','w')
+f_image = open('instagramdataimages.csv','w')
+f_video = open('instagramdatavideos.csv', 'w')
 
-writer = csv.writer(f)
-writer.writerow(['filter', 'comments', 'likes', 'latitude', 'longitude', 'locationname',\
+writer_image = csv.writer(f_image)
+writer_video = csv.writer(f_video)
+
+writer_image.writerow(['filter', 'comments', 'likes', 'latitude', 'longitude', 'locationname',\
 		'locationid', 'createdtime', 'caption', 'imageurl', 'username', 'realname', 'id', 'link'])
 
-for i in range(100000000):
+writer_video.writerow(['filter', 'comments', 'likes', 'latitude', 'longitude', 'locationname',\
+		'locationid', 'createdtime', 'caption', 'imageurl', 'username', 'realname', 'id', 'link'])
+
+
+oscar_id = 1197608759160579970
+
+for i in range(5000000):
 	url = '{0}/media/{1}?access_token={2}'.format(base_url, str(i), ACCESS_TOKEN)
 	r = requests.get(url)
 	if r.status_code == 200:
@@ -19,9 +28,6 @@ for i in range(100000000):
 		data = rjson['data']
 
 		try:
-			if data['type'] != 'image':
-				continue
-
 			row = [data['filter'], \
 			data['comments']['count'],\
 			data['likes']['count'],\
@@ -36,10 +42,18 @@ for i in range(100000000):
 			data['user']['full_name'],\
 			data['id'],\
 			data['link']]
-			writer.writerow([unicode(s).encode('utf-8') for s in row])
+			if data['type'] == 'image':
+				writer_image.writerow([unicode(s).encode('utf-8') for s in row])
+				print 'Got an image !!', (i)
+			else:
+				writer_video.writerow([unicode(s).encode('utf-8') for s in row])
+				print 'Got a video !!', (i)
 		except Exception as e:
 			print e
-			
+	else:
+		print 'ALARM! Not found'
+
 	time.sleep(0.7)
 
-f.close()
+f_image.close()
+f_video.close()
