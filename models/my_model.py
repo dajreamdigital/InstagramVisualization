@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import os
 from time import time
+import topic_modelling
 from sklearn.datasets import load_svmlight_file
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier, ExtraTreesClassifier, VotingClassifier, AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression, Perceptron, LinearRegression
@@ -11,15 +12,12 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.grid_search import GridSearchCV
 from sklearn.datasets import dump_svmlight_file
-
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.decomposition import NMF, LatentDirichletAllocation
 import datetime
 
 month = {1:4, 2:4, 3:1, 4:1, 5:1, 6:1, 7:2, 8:2, 9:3, 10:3, 11:3, 12:4}
 day =  {1:4, 2:4, 3:4, 4:4, 5:1, 6:1, 7:1, 8:1, 9:1, 10:1, 11:1, 12:1, 13:2, 14:2, 15:2, 16:2, 17:2, 18:3, 19:3, 20:3, 21:4, 22:4, 23:4, 0:4}
 
-def my_features():
+def features():
 	#TODO: complete this
 
 	events = pd.read_csv('../data/' + 'LosAngeles.csv')
@@ -35,78 +33,26 @@ def my_features():
 
 	print(result)
 
-	n_samples = 2000
-	n_features = 1000
-	n_topics = 50
-	n_top_words = 20
-
 
 	train = pd.read_csv("../data/LosAngeles.csv", delimiter=",")
 	data_samples = train.tags
-
-	# # Use tf-idf features for NMF.
-	# print("Extracting tf-idf features for NMF...")
-	# tfidf_vectorizer = TfidfVectorizer(max_df=0.95, min_df=2, #max_features=n_features,
-	#                                    stop_words='english')
-	# t0 = time()
-	# tfidf = tfidf_vectorizer.fit_transform(data_samples)
-	# print("done in %0.3fs." % (time() - t0))
-
-	# Use tf (raw term count) features for LDA.
-	# print("Extracting tf features for LDA...")
-	# tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, max_features=n_features,
-	#                                 stop_words='english')
-	# t0 = time()
-	# tf = tf_vectorizer.fit_transform(data_samples)
-	# print("done in %0.3fs." % (time() - t0))
-
-	# # Fit the NMF model
-	# print("Fitting the NMF model with tf-idf features,"
-	#       "n_samples=%d and n_features=%d..."
-	#       % (n_samples, n_features))
-	# t0 = time()
-	# nmf = NMF(n_components=n_topics, random_state=1, alpha=.1, l1_ratio=.5).fit(tfidf)
-	# print("done in %0.3fs." % (time() - t0))
-	#
-	# print("\nTopics in NMF model:")
-	# tfidf_feature_names = tfidf_vectorizer.get_feature_names()
-	# # print_top_words(nmf, tfidf_feature_names, n_top_words)
-
-	# print("Fitting LDA models with tf features, n_samples=%d and n_features=%d..."
-	#       % (n_samples, n_features))
-	# lda = LatentDirichletAllocation(n_topics=n_topics, max_iter=50,
-	#                                 learning_method='online', learning_offset=50.,
-	#                                 random_state=0)
-	# t0 = time()
-	# lda.fit(tf)
-	# print("done in %0.3fs." % (time() - t0))
-
-	# dist = lda.transform(tf)
-	# topics = pd.DataFrame(data=dist[0:,0:])
-	# agg = pd.concat([result, topics], axis=1, join='inner')
-	# agg = agg[-agg['filter'].isin([26])]
-	# agg = agg.sample(frac=0.2, replace=True)
-	#
-	#
-	# fil = agg.ix[:,0]
-	# agg = agg.drop('filter',1)
-	# dump_svmlight_file(agg, fil, "../data/output.train")
+	topics = topic_modelling.topic_LDA(data_samples)
 
 
+	agg = pd.concat([result, topics], axis=1, join='inner')
+	agg = agg[-agg['filter'].isin([26])]
+	agg = agg.sample(frac=0.2, replace=True)
+
+
+	fil = agg.ix[:,0]
+	agg = agg.drop('filter',1)
+	dump_svmlight_file(agg, fil, "../data/output.train")
 
 	#
 	X_train, Y_train = utils.get_data_from_svmlight("../data/output.train")
 	X_test, Y_test = utils.get_data_from_svmlight("../data/output.train")
 	#
 	return X_train,Y_train,X_test
-
-
-'''
-You can use any model you wish.
-
-input: X_train, Y_train, X_test
-output: Y_pred
-'''
 
 
 def my_classifier_predictions(X_train,Y_train,X_test):
@@ -140,7 +86,7 @@ def my_classifier_predictions(X_train,Y_train,X_test):
 
 
 def main():
-	X_train, Y_train, X_test = my_features()
+	X_train, Y_train, X_test = features()
 	# my_features()
 
 	# Y_pred = my_classifier_predictions(X_train,Y_train,X_test)
