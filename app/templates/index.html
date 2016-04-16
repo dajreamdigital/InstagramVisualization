@@ -16,7 +16,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	<script type=text/javascript src="{{url_for('static', filename='test.js') }}"></script>
 	<link rel="stylesheet" href="{{url_for('static', filename='styles/style.css') }}">
-  <link rel="stylesheet" href="{{url_for('static', filename='styles/materialize.min.css') }}">
 </head>
 
 
@@ -31,11 +30,11 @@
       <h1>Filter Recommendation</h1>
     </div>
     <div class="Right">
-      <!-- <ul>
+      <ul>
         <li >
-          <a href="/">Home</a>
+          <a href="{{ url_for('visualize') }}">Visualize</a>
         </li>
-        <li class="Active">
+        <!-- <li class="Active">
           <a href="/examples">Examples</a>
         </li>
         <li >
@@ -43,8 +42,8 @@
         </li>
         <li >
           <a href="/docs">Documentation</a>
-        </li>
-      </ul> -->
+        </li> -->
+      </ul>
     </div>
     <div class="Clear"></div>
 

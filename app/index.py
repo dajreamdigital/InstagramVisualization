@@ -5,7 +5,9 @@ app = Flask(__name__,static_url_path='/static')
 def hello():
     return render_template('index.html')
 
-
+@app.route('/visualize')
+def visualize():
+    return render_template('visualize.html')
 
 
 # @app.route("/autocomplete")

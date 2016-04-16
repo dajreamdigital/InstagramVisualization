@@ -2,31 +2,31 @@
 <meta charset="utf-8">
 <title>Q5</title>
 <style>
-    
+
     #viz {
         width: 50%;
         margin: 0 auto;
         margin-bottom: 50px;
     }
-    
+
     #viz1 {
         width: 50%;
         margin: 0 auto;
         margin-bottom: 50px;
     }
-    
+
     #viz2 {
         width: 50%;
         margin: 0 auto;
         margin-bottom: 50px;
     }
-    
+
     h3 {
         text-align: center;
     }
 </style>
-<script src="lib/d3/d3.js"></script>
-<script src="lib/d3plus.min.js"></script>
+<script type=text/javascript src="{{url_for('static', filename='d3.js') }}"></script>
+<script type=text/javascript src="{{url_for('static', filename='d3plus.min.js') }}"></script>
 
 <body>
     <h3>Filter distribution </h3>
@@ -84,12 +84,12 @@
 
 
 
-        d3.csv("Washington.csv", function(error, data) {
+        d3.csv("static/data/Washington.csv", function(error, data) {
             if (error) throw error;
 
             data.forEach(d => {
 
-            
+
                 if (d.filter != "Normal" && fil[d.filter] != null) {
                     fil[d.filter].value += 1;
                     if(dayTime(+d.createdtime) == 1)
@@ -100,7 +100,7 @@
                         fil[d.filter].evening += 1;
                     else if(dayTime(+d.createdtime) == 4)
                         fil[d.filter].night += 1;
-                    
+
                     if(yearTime(+d.createdtime) == 1)
                         fil[d.filter].spring += 1;
                     else if(yearTime(+d.createdtime) == 2)
@@ -113,15 +113,15 @@
 
 
             });
-            
+
             console.log(fil);
-            
+
             format = new Array();
             for (var d in fil) {
                 format.push({"name": d, "value": +fil[d].value});
             };
-            
-            
+
+
             d3plus.viz()
                 .container("#viz")
                 .data(format)
@@ -130,64 +130,64 @@
                 .x("name")
                 .y("value")
                 .draw()
-            
+
             dayFormat = new Array();
             for (var d in fil) {
             if (d == "Clarendon" || d == "Ludwig" || d == "Juno" || d == "Lark" || d == "Amaro" || d == "Valencia" || d == "Lo-fi"){
 //                console.log(d , +fil[d].value, +fil[d].morning, +fil[d].afternoon, +fil[d].evening, +fil[d].night);
-                
+
                 dayFormat.push({"Period of Day" : "Afternoon"  ,"name": d, "No of images": +fil[d].afternoon});
                 dayFormat.push({"Period of Day" : "Evening"  ,"name": d, "No of images": +fil[d].evening});
                 dayFormat.push({"Period of Day" : "Morning" ,"name": d, "No of images": +fil[d].morning});
                 dayFormat.push({"Period of Day" : "Night"  ,"name": d, "No of images": +fil[d].night});
                 }
             };
-            
-            
+
+
             var visualization = d3plus.viz()
-                .container("#viz1")  
-                .data(dayFormat)  
-                .type("bar")       
-                .id("name")         
+                .container("#viz1")
+                .data(dayFormat)
+                .type("bar")
+                .id("name")
                 .color("name")
-                .legend({"size": 50})      
+                .legend({"size": 50})
                 .y("No of images")
                 .x("Period of Day")
                 .draw()
-            
+
              seasonFormat = new Array();
             for (var d in fil) {
             if (d == "Clarendon" || d == "Ludwig" || d == "Juno" || d == "Lark" || d == "Amaro" || d == "Valencia" || d == "Lo-fi"){
                 console.log(d , +fil[d].value, +fil[d].fall, +fil[d].spring, +fil[d].summer, +fil[d].winter);
-                
+
                 seasonFormat.push({"Period of Year" : "Fall"  ,"name": d, "No of images": +fil[d].fall});
                 seasonFormat.push({"Period of Year" : "Spring"  ,"name": d, "No of images": +fil[d].spring});
                 seasonFormat.push({"Period of Year" : "Summer" ,"name": d, "No of images": +fil[d].summer});
                 seasonFormat.push({"Period of Year" : "Winter"  ,"name": d, "No of images": +fil[d].winter});
                 }
             };
-            
+
             var visualization = d3plus.viz()
-                .container("#viz2")  
-                .data(seasonFormat)  
-                .type("bar")       
-                .id("name")         
+                .container("#viz2")
+                .data(seasonFormat)
+                .type("bar")
+                .id("name")
                 .color("name")
-                .legend({"size": 50})      
+                .legend({"size": 50})
                 .y("No of images")
                 .x("Period of Year")
             .draw()
-         
+
 
         });
-        
+
         function dayTime(UNIX_timestamp){
             var a = new Date(UNIX_timestamp * 1000);
                 var phase = {1:4, 2:4, 3:4, 4:4, 5:1, 6:1, 7:1, 8:1, 9:1, 10:1, 11:1, 12:1, 13:2, 14:2, 15:2, 16:2, 17:2, 18:3, 19:3, 20:3, 21:4, 22:4, 23:4, 0:4};
             var hour = phase[a.getHours()];
             return hour;
         }
-        
+
            function yearTime(UNIX_timestamp){
             var a = new Date(UNIX_timestamp * 1000);
             var phase = {1:4, 2:4, 3:1, 4:1, 5:1, 6:1, 7:2, 8:2, 9:3, 10:3, 11:3, 12:4};
