@@ -18,7 +18,7 @@ class FilterRecommender:
 		imageclasses = {'city':0, 'selfie':1, 'fashion':2, 'group': 3, 'food':4, 'animal':5, 'flower':6, 'beach':7, 'nature':8, 'quote':9, 'abstract': 10}
 
 
-		FilterRecommender.df = pd.read_csv('../data/Data_NY_LA.csv',\
+		FilterRecommender.df = pd.read_csv('data/Data_NY_LA.csv',\
 			usecols = ['locationname', 'createdtime', 'image_class1', 'likes', 'comments', 'filter'])
 
 		FilterRecommender.df['timeofday'] = FilterRecommender.df['createdtime'].apply(lambda x: day[int(datetime.datetime.fromtimestamp(int(x)).strftime('%H'))])
@@ -44,7 +44,7 @@ class FilterRecommender:
 
 
 	def getRecommendations(self, inputvector):
-		
+
 
 		#distances, indices = model.kneighbors([[3, 1, 1, 2]], features.shape[0])
 		distances, indices = FilterRecommender.model.kneighbors([inputvector], 1000)
