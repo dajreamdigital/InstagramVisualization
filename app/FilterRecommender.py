@@ -15,10 +15,10 @@ class FilterRecommender:
 		#for season
 		month = {1:4, 2:4, 3:1, 4:1, 5:1, 6:1, 7:2, 8:2, 9:3, 10:3, 11:3, 12:4}
 		#image classes
-		imageclasses = {'city':0, 'selfie':1, 'food':2, 'animal':3, 'flower':4, 'beach':5, 'nature':6, 'quote':7}
+		imageclasses = {'city':0, 'selfie':1, 'fashion':2, 'group': 3, 'food':4, 'animal':5, 'flower':6, 'beach':7, 'nature':8, 'quote':9, 'abstract': 10}
 
 
-		FilterRecommender.df = pd.read_csv('../data/NewYork_new_object_detection.csv',\
+		FilterRecommender.df = pd.read_csv('../data/Data_NY_LA.csv',\
 			usecols = ['locationname', 'createdtime', 'image_class1', 'likes', 'comments', 'filter'])
 
 		FilterRecommender.df['timeofday'] = FilterRecommender.df['createdtime'].apply(lambda x: day[int(datetime.datetime.fromtimestamp(int(x)).strftime('%H'))])
@@ -85,22 +85,21 @@ class FilterRecommender:
 
 		filterscore['score'] = filterscore['likes'] + filterscore['comments']
 
-		filterscore = filterscore.sort('likes', ascending=0).iloc[:5]
+		filterscore = filterscore.sort('score', ascending=0).iloc[:5]
 
 		return filterscore.index.values
 
 def main():
 	filterrecommender = FilterRecommender()
 	f = open('../data/FilterRecommendations.txt','w')
-	for imageclass in range(8):
-		for timeofday in range(1,5):
-			for season in range(1,5):
-				for dayofweek in range(7):
-					print [timeofday, imageclass, season, dayofweek], filterrecommender.getRecommendations([timeofday, imageclass, season, dayofweek])
-					f.write(str([timeofday, imageclass, season, dayofweek]) + str(filterrecommender.getRecommendations([timeofday, imageclass, season, dayofweek])))
-					f.write('\n')
-	f.close()
-	#print filterrecommender.getRecommendations([1,3,1,2])
+	# for imageclass in range(8):
+	# 	for timeofday in range(1,5):
+	# 		for season in range(1,5):
+	# 			for dayofweek in range(7):
+	# 				print [timeofday, imageclass, season, dayofweek], filterrecommender.getRecommendations([timeofday, imageclass, season, dayofweek])
+	# 				f.write(str([timeofday, imageclass, season, dayofweek]) + str(filterrecommender.getRecommendations([timeofday, imageclass, season, dayofweek])))
+	# 				f.write('\n')
+	print filterrecommender.getRecommendations([1,9,1,2])
 
 if __name__ == '__main__':
 	main()
