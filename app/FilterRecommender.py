@@ -44,7 +44,6 @@ class FilterRecommender:
 
 	def getRecommendations(self, inputv):
 		
-
 		#distances, indices = model.kneighbors([[3, 1, 1, 2]], features.shape[0])
 		#Get required features from inputvector[imageclass, createdtime]
 		createdtime = inputv[1]
