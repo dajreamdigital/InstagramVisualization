@@ -85,7 +85,7 @@ class FilterRecommender:
 
 		filterscore['score'] = filterscore['likes'] + filterscore['comments']
 
-		filterscore = filterscore.sort('likes', ascending=0).iloc[:5]
+		filterscore = filterscore.sort('score', ascending=0).iloc[:5]
 
 		return filterscore.index.values
 
@@ -99,7 +99,7 @@ def main():
 	# 				print [timeofday, imageclass, season, dayofweek], filterrecommender.getRecommendations([timeofday, imageclass, season, dayofweek])
 	# 				f.write(str([timeofday, imageclass, season, dayofweek]) + str(filterrecommender.getRecommendations([timeofday, imageclass, season, dayofweek])))
 	# 				f.write('\n')
-	print filterrecommender.getRecommendations([1,3,1,2])
+	print filterrecommender.getRecommendations([1,9,1,2])
 
 if __name__ == '__main__':
 	main()
