@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+W<!DOCTYPE html>
 <html>
 <head>
 <title>Filter Recommendation</title>
@@ -179,101 +179,24 @@ $.ajax({
 });
 
 
-
-
-	var fil = {
-			"Aden" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Amaro" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Ashby" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Brannan" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Brooklyn" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Charmes" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Clarendon" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Crema" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Dogpatch" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Earlybird" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Gingham" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Ginza" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Hefe" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Helena" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Hudson" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Inkwell" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Juno" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Kelvin" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Lark" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Lo-fi" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Ludwig" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Maven" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Mayfair" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Moon" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Nashville" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Normal" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Perpetua" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Reyes" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Rise" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Sierra" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Skyline" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Slumber" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Stinson" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Sutro" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Toaster" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Unknown" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Valencia" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Vesper" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Walden" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"Willow" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"X-Pro II" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-			"1977" : { "value" : 0 , "morning" : 0, "afternoon" :0, "evening" : 0, "night" : 0 , "summer" : 0, "spring" : 0, "fall": 0, "winter" : 0},
-	}
-
-
-
-	d3.csv("static/data/Washington.csv", function(error, data) {
-			if (error) throw error;
-
-			data.forEach(d => {
-
-
-					if (d.filter != "Normal" && fil[d.filter] != null) {
-							fil[d.filter].value += 1;
-							if(dayTime(+d.createdtime) == 1)
-									fil[d.filter].morning += 1;
-							else if(dayTime(+d.createdtime) == 2)
-									fil[d.filter].afternoon += 1;
-							else if(dayTime(+d.createdtime) == 3)
-									fil[d.filter].evening += 1;
-							else if(dayTime(+d.createdtime) == 4)
-									fil[d.filter].night += 1;
-
-							if(yearTime(+d.createdtime) == 1)
-									fil[d.filter].spring += 1;
-							else if(yearTime(+d.createdtime) == 2)
-									fil[d.filter].summer += 1;
-							else if(yearTime(+d.createdtime) == 3)
-									fil[d.filter].fall += 1;
-							else if(yearTime(+d.createdtime) == 4)
-									fil[d.filter].winter += 1;
-					}
-
-
-			});
-
-			// console.log(fil);
-			//
-			// format = new Array();
-			// for (var d in fil) {
-			// 		format.push({"name": d, "value": +fil[d].value});
-			// };
-			//
-			//
-			// d3plus.viz()
-			// 		.container("#viz")
-			// 		.data(format)
-			// 		.type("bar")
-			// 		.id("name")
-			// 		.x("name")
-			// 		.y("value")
-			// 		.draw()
+		d3.json('./static/preprocessed.json', function(error, json) {
+                if (error)  return console.warn(error);
+            fil=json;
+            console.log(fil)
+			format = new Array();
+			for (var d in fil) {
+					format.push({"name": d, "value": +fil[d].value});
+			};
+			
+			
+			d3plus.viz()
+					.container("#viz")
+					.data(format)
+					.type("bar")
+					.id("name")
+					.x("name")
+					.y("value")
+					.draw()
 
 			dayFormat = new Array();
 			for (var d in fil) {
