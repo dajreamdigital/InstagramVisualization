@@ -82,7 +82,8 @@ W<!DOCTYPE html>
 			  >
 
 				<a id="recommendation" class="waves-effect waves-light btn deep-purple darken-4"><i class="material-icons left">thumb_up</i>Show Recommendations</a>
-
+				<a id="getImage" class="waves-effect waves-light btn deep-purple darken-4"><i class="material-icons left">thumb_up</i>Get Image</a>
+				<!-- <a href="{{ url_for('getImage') }}" style="text-decoration: none">Call Visualize</a> -->
 
 			  <div id="PresetFilters" style="padding-top: 20px;">
 
@@ -167,6 +168,29 @@ $.ajax({
 								html += '<a data-preset="'+value+'">'+value+'</a>';
 						});
 				$('#PresetFilters').append(html);
+
+		},
+		error: function(error) {
+				console.log(error);
+		}
+});
+
+});
+
+
+$('#getImage').click(function() {
+$.ajax({
+		url: '/getImage',
+		// data: $('form').serialize(),
+		// type: 'POST',
+		success: function(response) {
+				// var parsed_data = JSON.parse(response);
+				// console.log(parsed_data.suggestions);
+				// var html = '';
+				// $.each(parsed_data.suggestions, function(key, value){
+				// 				html += '<a data-preset="'+value+'">'+value+'</a>';
+				// 		});
+				// $('#PresetFilters').append(html);
 
 		},
 		error: function(error) {
