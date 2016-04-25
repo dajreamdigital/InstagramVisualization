@@ -25,6 +25,7 @@ def instagram():
 def getImage():
     base_url = 'https://api.instagram.com/v1'
     ACCESS_TOKEN = '3159841018.1fb234f.7184f0be946646bfb83fa32ca5c9cd7f'
+    # ACCESS_TOKEN = '1312566635.1fb234f.4fecde8495fe4eeb8823ec21596f05b0 '
     # user = '1991460'
     try:
         #https://api.instagram.com/v1/users/self/media/recent/?access_token=ACCESS-TOKEN
@@ -55,8 +56,8 @@ def recommend():
     param = [imageClass, createdTime]
     x = resultFilter.getRecommendations(param)
     print x
-    result = ['Clarendon', 'Ludwig', 'Lark','Juno']
-    return json.dumps({"suggestions" : result})
+    # result = ['Clarendon', 'Ludwig', 'Lark','Juno']
+    return json.dumps({"suggestions" : x.tolist(), "imageClass" : imageClass})
 
 if __name__ == "__main__":
     global resultFilter

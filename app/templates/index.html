@@ -26,6 +26,11 @@
 			margin-bottom: 50px;
 	}
 
+	#imgHolder a img {
+    display:block;
+    margin:auto;
+}
+
 </style>
 <meta>
 	<!-- Scripts-->
@@ -77,13 +82,13 @@
       <div class="col s7">
 
 				<div class="card small">
-            <div class="card-image">
+            <div id="imgHolder" class="card-image">
               <img id="preset-example" src="static/images/test.jpg" data-caman-hidpi="static/images/test.jpg">
-              <!-- <span class="card-title">Card Title</span> -->
             </div>
             <div class="card-action">
-							<a id="recommendation" class="waves-effect waves-light btn deep-purple darken-4"><i class="material-icons left">thumb_up</i>Show Recommendations</a>
-							<a id="getImage" class="waves-effect waves-light btn deep-purple darken-4"><i class="material-icons left">thumb_up</i>Get Image</a>
+							<a id="getImage" class="waves-effect waves-light btn deep-purple"><i class="material-icons left">add_a_photo</i>Get Image</a>
+							<a id="recommendation" class="waves-effect waves-light btn deep-purple" style="float:right;"><i class="material-icons left">thumb_up</i>Show Recommendations</a>
+
             </div>
           </div>
 
@@ -165,6 +170,30 @@
 
 <script type="text/javascript">
 
+var associativeArray = {};
+associativeArray["Clarendon"] = "oldBoot";
+associativeArray["Gingham"] = "sunrise";
+associativeArray["Moon"] = "vintage";
+associativeArray["Lark"] = "clarity";
+associativeArray["Juno"] = "lomo";
+associativeArray["Crema"] = "crossProcess";
+associativeArray["Ludwig"] = "glowingSun";
+associativeArray["Aden"] = "hazyDays";
+associativeArray["Amaro"] = "hemingway";
+associativeArray["Mayfair"] = "pinhole";
+associativeArray["Rise"] = "love";
+associativeArray["Valencia"] = "concentrate";
+associativeArray["X-Pro II"] = "nostalgia";
+associativeArray["Lo-fi"] = "jarques";
+associativeArray["Hefe"] = "orangePeel";
+associativeArray["Inkwell"] = "herMajesty";
+associativeArray["Nashville"] = "grungy";
+associativeArray["Reyes"] = "hazyDays";
+associativeArray["Slumber"] = "orangePeel";
+associativeArray["Willow"] = "sinCity";
+associativeArray["Perpetua"] = "crossProcess";
+associativeArray["Sierra"] = "herMajesty";
+associativeArray["Hudson"] = "crossProcess";
 
 $(document).ready(function(){
 
@@ -184,8 +213,9 @@ $.ajax({
 				dayFor = new Array();
 				seasonFor = new Array();
 				popularityFor = new Array();
+				imgClass = parsed_data.imageClass
 				$.each(parsed_data.suggestions, function(key, value){
-								html += '<a data-preset="'+value+'">'+value+'</a>';
+								html += '<a data-preset="'+associativeArray[value]+'">'+value+'</a>';
 								for (var d in filSeason) {
 								if (d == value){
 										dayFor.push({"per" : "Afternoon"  ,"name": d, "val": +filSeason[d].afternoon});
@@ -206,7 +236,7 @@ $.ajax({
 
 								for (var d in fil) {
 								if (d == value){
-										popularityFor.push({"Object Class" : "Selfie"  ,"name": d, "Filter Popularity": +fil[d].selfie["likes"]/fil[d].selfie["count"]});
+										popularityFor.push({"Object Class" : imgClass  ,"name": d, "Filter Popularity": +fil[d][imgClass]["likes"]/fil[d][imgClass]["count"]});
 										}
 								};
 						});
