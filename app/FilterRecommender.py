@@ -15,9 +15,9 @@ class FilterRecommender:
 	month = {1:4, 2:4, 3:1, 4:1, 5:1, 6:1, 7:2, 8:2, 9:3, 10:3, 11:3, 12:4}
 	#image classes
 	imageclasses = {'city':0, 'selfie':1, 'fashion':2, 'group': 3, 'food':4, 'animal':5, 'flower':6, 'beach':7, 'nature':8, 'quote':9, 'abstract': 10}
-	
+
 	def __init__(self):
-		FilterRecommender.df = pd.read_csv('../data/Data_NY_LA.csv',\
+		FilterRecommender.df = pd.read_csv('data/Data_NY_LA.csv',\
 			usecols = ['locationname', 'createdtime', 'image_class1', 'likes', 'comments', 'filter'])
 
 		FilterRecommender.df['timeofday'] = FilterRecommender.df['createdtime'].apply(lambda x: FilterRecommender.day[int(datetime.datetime.fromtimestamp(int(x)).strftime('%H'))])
@@ -43,7 +43,7 @@ class FilterRecommender:
 
 
 	def getRecommendations(self, inputv):
-		
+
 		#distances, indices = model.kneighbors([[3, 1, 1, 2]], features.shape[0])
 		#Get required features from inputvector[imageclass, createdtime]
 		createdtime = inputv[1]
@@ -79,7 +79,7 @@ class FilterRecommender:
 		filterscore['comments'] = nearestneighbors['comments'].apply(lambda x: x*beta)
 
 		filterscore = nearestneighbors.groupby('filter').agg({'likes': np.sum, 'comments': np.sum})
-		
+
 		filterscore['score'] = filterscore['likes'] + filterscore['comments']
 
 		#Penalize Clarendon
