@@ -15,7 +15,7 @@ def hello():
 
 @app.route('/visualize')
 def visualize():
-    return render_template('visualize.html')
+    return render_template('visualize_it.html')
 
 @app.route('/instagram')
 def instagram():
