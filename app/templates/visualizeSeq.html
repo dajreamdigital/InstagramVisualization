@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Filter Recommendation</title>
+    <script type=text/javascript src="{{url_for('static', filename='d3.v3.min.js') }}"></script>
+    <!-- <script src="//d3js.org/d3.v3.min.js"></script> -->
+    <link rel="stylesheet" type="text/css"
+      href="https://fonts.googleapis.com/css?family=Open+Sans:400,600">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/sequences.css') }}" media="screen,projection">
+    <script type=text/javascript src="{{url_for('static', filename='materialize.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='test.js') }}"></script>
+
+    <!-- CSS -->
+
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/materialize.css') }}" media="screen,projection">
+    <script type=text/javascript src="{{url_for('static', filename='d3.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='d3plus.min.js') }}"></script>
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+    		<div class="container-fluid">
+    				<div class="navbar-header">
+    						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+    								<span class="sr-only">Toggle navigation</span>
+    								<span class="icon-bar"></span>
+    								<span class="icon-bar"></span>
+    								<span class="icon-bar"></span>
+    						</button>
+    						<a class="navbar-brand" href="#">Filter Recommendation</a>
+    				</div>
+
+    				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    						<ul class="nav navbar-nav navbar-right">
+
+    								<li><a href="{{ url_for('visualize') }}" style="text-decoration: none">Visualize</a></li>
+    						</ul>
+    				</div>
+    		</div>
+    </nav>
+
+<div  class="container"  style="width:95%;">
+              <h4>Filtered image distribution based on count</h4>
+    <div class="row">
+          <div class="col s8">
+
+
+        <div id="sequence"></div>
+          <div id="chart">
+            <div id="explanation" style="visibility: hidden;">
+              <span id="percentage"></span><br/>
+              of filtered images belong to this category.
+            </div>
+          </div></div>
+
+
+          <div class="col s4"><h6>Legend</h6><div id="legend"></div></div>
+          <!-- <div class="col s6">This div is 6-columns wide</div> -->
+        </div>
+
+      </div>
+
+    <!-- <div id="main"> -->
+
+    <!-- </div> -->
+
+      <!-- <input type="checkbox" id="togglelegend"> Legend<br/> -->
+
+    <script type=text/javascript src="{{url_for('static', filename='sequences.js') }}"></script>
+    <script type="text/javascript">
+      // Hack to make this example display correctly in an iframe on bl.ocks.org
+      d3.select(self.frameElement).style("height", "700px");
+  </script>
+  </body>
+</html>

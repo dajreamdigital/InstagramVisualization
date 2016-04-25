@@ -1,4 +1,4 @@
-W<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Filter Recommendation</title>
@@ -62,7 +62,7 @@ W<!DOCTYPE html>
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
 
-								<li><a href="{{ url_for('visualize') }}" style="text-decoration: none">Visualize</a></li>
+								<li><a href="{{ url_for('visualize') }}" style="text-decoration: none">View Trends</a></li>
 						</ul>
 				</div>
 		</div>
@@ -87,68 +87,74 @@ W<!DOCTYPE html>
             </div>
           </div>
 
+				<div class="card hoverable">
+					<div class="card-content">
+						<h6>Recommendations</h6>
+						<div id="PresetFilters" style="padding-top: 20px; height: 70px;">
+
+					    <!-- <a data-preset="vintage">Vintage</a>
+
+					    <a data-preset="lomo">Lomo</a>
+
+					    <a data-preset="clarity">Clarity</a>
+
+					    <a data-preset="sinCity">Sin City</a>
+
+					    <a data-preset="sunrise">Sunrise</a>
+
+					    <a data-preset="crossProcess">Cross Process</a>
+
+					    <a data-preset="orangePeel">Orange Peel</a>
+
+					    <a data-preset="love">Love</a>
+
+					    <a data-preset="grungy">Grungy</a>
+
+					    <a data-preset="jarques">Jarques</a>
+
+					    <a data-preset="pinhole">Pinhole</a>
+
+					    <a data-preset="oldBoot">Old Boot</a>
+
+					    <a data-preset="glowingSun">Glowing Sun</a>
+
+					    <a data-preset="hazyDays">Hazy Days</a>
+
+					    <a data-preset="herMajesty">Her Majesty</a>
+
+					    <a data-preset="nostalgia">Nostalgia</a>
+
+					    <a data-preset="hemingway">Hemingway</a>
+
+					    <a data-preset="concentrate">Concentrate</a> -->
+					  </div>
+					</div>
+				</div>
 
 
 
-				<!-- <a href="{{ url_for('getImage') }}" style="text-decoration: none">Call Visualize</a> -->
 
-			  <div id="PresetFilters" style="padding-top: 20px;">
+				<div id="popularity" class="card hoverable">
+					<div class="card-content">
+						<h5>Popularity of the filters</h5>
+						<div id="viz" style="height: 450px"></div>
+					</div>
 
-			    <!-- <a data-preset="vintage">Vintage</a>
-
-			    <a data-preset="lomo">Lomo</a>
-
-			    <a data-preset="clarity">Clarity</a>
-
-			    <a data-preset="sinCity">Sin City</a>
-
-			    <a data-preset="sunrise">Sunrise</a>
-
-			    <a data-preset="crossProcess">Cross Process</a>
-
-			    <a data-preset="orangePeel">Orange Peel</a>
-
-			    <a data-preset="love">Love</a>
-
-			    <a data-preset="grungy">Grungy</a>
-
-			    <a data-preset="jarques">Jarques</a>
-
-			    <a data-preset="pinhole">Pinhole</a>
-
-			    <a data-preset="oldBoot">Old Boot</a>
-
-			    <a data-preset="glowingSun">Glowing Sun</a>
-
-			    <a data-preset="hazyDays">Hazy Days</a>
-
-			    <a data-preset="herMajesty">Her Majesty</a>
-
-			    <a data-preset="nostalgia">Nostalgia</a>
-
-			    <a data-preset="hemingway">Hemingway</a>
-
-			    <a data-preset="concentrate">Concentrate</a> -->
-
-			  </div>
+				</div>
 
       </div>
       <div class="col s5">
-					<div class="card hoverable">
+					<div id="day" class="card hoverable">
 						<div class="card-content">
-              <p>Filter distribution based on period of the day.</p>
-            </div>
-            <div class="card-image">
-              <div id="viz1" style="height: 250px"></div>
+              <h5>Usage based on period of the day.</h5>
+							<div id="viz1" style="height: 350px"></div>
             </div>
           </div>
 
-					<div class="card hoverable">
+					<div id="season" class="card hoverable">
 						<div class="card-content">
-              <p>Filter distribution based on season of the year.</p>
-            </div>
-            <div class="card-image">
-              <div id="viz2" style="height: 250px"></div>
+              <h5>Usage based on season of the year.</h5>
+							<div id="viz2" style="height: 350px"></div>
             </div>
           </div>
     </div>
@@ -162,6 +168,10 @@ W<!DOCTYPE html>
 
 $(document).ready(function(){
 
+	$('#popularity').hide();
+	$('#day').hide();
+	$('#season').hide();
+
 $('#recommendation').click(function() {
 $.ajax({
 		url: '/recommend',
@@ -171,24 +181,45 @@ $.ajax({
 				var parsed_data = JSON.parse(response);
 				console.log(parsed_data.suggestions);
 				var html = '';
+				dayFor = new Array();
+				seasonFor = new Array();
+				popularityFor = new Array();
 				$.each(parsed_data.suggestions, function(key, value){
 								html += '<a data-preset="'+value+'">'+value+'</a>';
+								for (var d in filSeason) {
+								if (d == value){
+										dayFor.push({"per" : "Afternoon"  ,"name": d, "val": +filSeason[d].afternoon});
+										dayFor.push({"per" : "Evening"  ,"name": d, "val": +filSeason[d].evening});
+										dayFor.push({"per" : "Morning" ,"name": d, "val": +filSeason[d].morning});
+										dayFor.push({"per" : "Night"  ,"name": d, "val": +filSeason[d].night});
+										}
+								};
+
+								for (var d in filSeason) {
+								if (d == value){
+										seasonFor.push({"per" : "Fall"  ,"name": d, "val": +filSeason[d].fall});
+										seasonFor.push({"per" : "Spring"  ,"name": d, "val": +filSeason[d].spring});
+										seasonFor.push({"per" : "Summer" ,"name": d, "val": +filSeason[d].summer});
+										seasonFor.push({"per" : "Winter"  ,"name": d, "val": +filSeason[d].winter});
+										}
+								};
+
+								for (var d in fil) {
+								if (d == value){
+										popularityFor.push({"Object Class" : "Selfie"  ,"name": d, "Filter Popularity": +fil[d].selfie["likes"]/fil[d].selfie["count"]});
+										}
+								};
 						});
 				$('#PresetFilters').append(html);
 
-				dayFor = new Array();
-				for (var d in fil) {
-				if (d == "Lark"){
-			//                console.log(d , +fil[d].value, +fil[d].morning, +fil[d].afternoon, +fil[d].evening, +fil[d].night);
+				$('#day').show();
+				visualizationA.data(dayFor).draw();
 
-						dayFor.push({"per" : "Afternoon"  ,"name": d, "val": +fil[d].afternoon});
-						dayFor.push({"per" : "Evening"  ,"name": d, "val": +fil[d].evening});
-						dayFor.push({"per" : "Morning" ,"name": d, "val": +fil[d].morning});
-						dayFor.push({"per" : "Night"  ,"name": d, "val": +fil[d].night});
-						}
-				};
+				$('#season').show();
+				visualizationB.data(seasonFor).draw();
 
-				visualization.data(dayFor).draw();
+				$('#popularity').show();
+				visualizationC.data(popularityFor).draw();
 
 		},
 		error: function(error) {
@@ -202,17 +233,7 @@ $.ajax({
 $('#getImage').click(function() {
 $.ajax({
 		url: '/getImage',
-		// data: $('form').serialize(),
-		// type: 'POST',
 		success: function(response) {
-				// var parsed_data = JSON.parse(response);
-				// console.log(parsed_data.suggestions);
-				// var html = '';
-				// $.each(parsed_data.suggestions, function(key, value){
-				// 				html += '<a data-preset="'+value+'">'+value+'</a>';
-				// 		});
-				// $('#PresetFilters').append(html);
-
 		},
 		error: function(error) {
 				console.log(error);
@@ -224,23 +245,12 @@ $.ajax({
 });
 
 
-	var fil = {"Brannan": {"summer": 0, "evening": 2, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 2, "likes": 26}, "food": {"count": 0, "likes": 0}, "spring": 13, "selfie": {"count": 8, "likes": 423}, "night": 3, "value": 13, "morning": 2, "quote": {"count": 1, "likes": 29}, "fashion": {"count": 1, "likes": 28}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 1, "likes": 23}, "nature": {"count": 0, "likes": 0}, "afternoon": 6}, "Willow": {"summer": 0, "evening": 26, "group": {"count": 14, "likes": 360}, "winter": 0, "city": {"count": 41, "likes": 2299}, "food": {"count": 3, "likes": 38}, "spring": 169, "selfie": {"count": 45, "likes": 9254}, "night": 61, "value": 169, "morning": 41, "quote": {"count": 14, "likes": 264}, "fashion": {"count": 4, "likes": 149}, "flower": {"count": 1, "likes": 5}, "animal": {"count": 5, "likes": 134}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 40, "likes": 7343}, "nature": {"count": 2, "likes": 30}, "afternoon": 41}, "Unknown": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 0, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 0, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Mayfair": {"summer": 0, "evening": 87, "group": {"count": 43, "likes": 1223}, "winter": 0, "city": {"count": 140, "likes": 4342}, "food": {"count": 36, "likes": 917}, "spring": 458, "selfie": {"count": 61, "likes": 3004}, "night": 131, "value": 458, "morning": 72, "quote": {"count": 41, "likes": 1302}, "fashion": {"count": 20, "likes": 3938}, "flower": {"count": 12, "likes": 115}, "animal": {"count": 12, "likes": 1353}, "fall": 0, "beach": {"count": 15, "likes": 443}, "abstract": {"count": 61, "likes": 2072}, "nature": {"count": 17, "likes": 266}, "afternoon": 168}, "Hudson": {"summer": 0, "evening": 58, "group": {"count": 34, "likes": 1358}, "winter": 0, "city": {"count": 33, "likes": 651}, "food": {"count": 19, "likes": 580}, "spring": 238, "selfie": {"count": 48, "likes": 1848}, "night": 65, "value": 238, "morning": 45, "quote": {"count": 19, "likes": 2278}, "fashion": {"count": 23, "likes": 746}, "flower": {"count": 8, "likes": 214}, "animal": {"count": 14, "likes": 591}, "fall": 0, "beach": {"count": 8, "likes": 359}, "abstract": {"count": 28, "likes": 1964}, "nature": {"count": 4, "likes": 282}, "afternoon": 70}, "Moon": {"summer": 0, "evening": 96, "group": {"count": 40, "likes": 2084}, "winter": 0, "city": {"count": 114, "likes": 4699}, "food": {"count": 11, "likes": 508}, "spring": 525, "selfie": {"count": 144, "likes": 5742}, "night": 161, "value": 525, "morning": 104, "quote": {"count": 59, "likes": 3366}, "fashion": {"count": 17, "likes": 924}, "flower": {"count": 5, "likes": 164}, "animal": {"count": 12, "likes": 409}, "fall": 0, "beach": {"count": 4, "likes": 131}, "abstract": {"count": 114, "likes": 3474}, "nature": {"count": 5, "likes": 396}, "afternoon": 164}, "Lark": {"summer": 0, "evening": 213, "group": {"count": 140, "likes": 15329}, "winter": 0, "city": {"count": 261, "likes": 8180}, "food": {"count": 143, "likes": 4163}, "spring": 1169, "selfie": {"count": 200, "likes": 20490}, "night": 322, "value": 1169, "morning": 235, "quote": {"count": 80, "likes": 2886}, "fashion": {"count": 76, "likes": 22007}, "flower": {"count": 16, "likes": 318}, "animal": {"count": 67, "likes": 3558}, "fall": 0, "beach": {"count": 15, "likes": 1081}, "abstract": {"count": 153, "likes": 7900}, "nature": {"count": 18, "likes": 499}, "afternoon": 399}, "Hefe": {"summer": 0, "evening": 65, "group": {"count": 31, "likes": 1308}, "winter": 0, "city": {"count": 88, "likes": 2326}, "food": {"count": 24, "likes": 730}, "spring": 331, "selfie": {"count": 59, "likes": 2089}, "night": 85, "value": 331, "morning": 79, "quote": {"count": 31, "likes": 2267}, "fashion": {"count": 12, "likes": 199}, "flower": {"count": 7, "likes": 174}, "animal": {"count": 11, "likes": 327}, "fall": 0, "beach": {"count": 1, "likes": 23}, "abstract": {"count": 51, "likes": 1242}, "nature": {"count": 16, "likes": 477}, "afternoon": 102}, "Earlybird": {"summer": 0, "evening": 5, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 1, "likes": 3}, "food": {"count": 0, "likes": 0}, "spring": 18, "selfie": {"count": 4, "likes": 102}, "night": 5, "value": 18, "morning": 5, "quote": {"count": 6, "likes": 150}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 3, "likes": 99}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 3, "likes": 87}, "nature": {"count": 1, "likes": 20}, "afternoon": 3}, "Crema": {"summer": 0, "evening": 53, "group": {"count": 38, "likes": 1734}, "winter": 0, "city": {"count": 75, "likes": 2798}, "food": {"count": 19, "likes": 670}, "spring": 291, "selfie": {"count": 74, "likes": 57090}, "night": 101, "value": 291, "morning": 68, "quote": {"count": 16, "likes": 4605}, "fashion": {"count": 10, "likes": 309}, "flower": {"count": 2, "likes": 87}, "animal": {"count": 17, "likes": 677}, "fall": 0, "beach": {"count": 6, "likes": 165}, "abstract": {"count": 31, "likes": 737}, "nature": {"count": 3, "likes": 136}, "afternoon": 69}, "Sierra": {"summer": 0, "evening": 61, "group": {"count": 42, "likes": 1552}, "winter": 0, "city": {"count": 49, "likes": 1153}, "food": {"count": 13, "likes": 1821}, "spring": 278, "selfie": {"count": 112, "likes": 45634}, "night": 90, "value": 278, "morning": 50, "quote": {"count": 9, "likes": 267}, "fashion": {"count": 7, "likes": 253}, "flower": {"count": 2, "likes": 29}, "animal": {"count": 15, "likes": 5501}, "fall": 0, "beach": {"count": 1, "likes": 20}, "abstract": {"count": 24, "likes": 1004}, "nature": {"count": 4, "likes": 14}, "afternoon": 77}, "Reyes": {"summer": 0, "evening": 49, "group": {"count": 34, "likes": 991}, "winter": 0, "city": {"count": 45, "likes": 2073}, "food": {"count": 12, "likes": 155}, "spring": 227, "selfie": {"count": 59, "likes": 2018}, "night": 64, "value": 227, "morning": 44, "quote": {"count": 14, "likes": 307}, "fashion": {"count": 11, "likes": 450}, "flower": {"count": 3, "likes": 495}, "animal": {"count": 23, "likes": 569}, "fall": 0, "beach": {"count": 2, "likes": 33}, "abstract": {"count": 23, "likes": 625}, "nature": {"count": 1, "likes": 9}, "afternoon": 70}, "Ludwig": {"summer": 0, "evening": 134, "group": {"count": 81, "likes": 36515}, "winter": 0, "city": {"count": 160, "likes": 22751}, "food": {"count": 134, "likes": 5665}, "spring": 802, "selfie": {"count": 155, "likes": 19165}, "night": 256, "value": 802, "morning": 145, "quote": {"count": 44, "likes": 1142}, "fashion": {"count": 59, "likes": 3827}, "flower": {"count": 11, "likes": 259}, "animal": {"count": 45, "likes": 1350}, "fall": 0, "beach": {"count": 12, "likes": 405}, "abstract": {"count": 88, "likes": 7596}, "nature": {"count": 13, "likes": 648}, "afternoon": 267}, "Stinson": {"summer": 0, "evening": 3, "group": {"count": 1, "likes": 44}, "winter": 0, "city": {"count": 5, "likes": 255}, "food": {"count": 2, "likes": 63}, "spring": 19, "selfie": {"count": 8, "likes": 996}, "night": 2, "value": 19, "morning": 7, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 1, "likes": 9}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 1, "likes": 24}, "abstract": {"count": 1, "likes": 20}, "nature": {"count": 0, "likes": 0}, "afternoon": 7}, "Ashby": {"summer": 0, "evening": 6, "group": {"count": 5, "likes": 144}, "winter": 0, "city": {"count": 10, "likes": 315}, "food": {"count": 2, "likes": 98}, "spring": 39, "selfie": {"count": 14, "likes": 1680}, "night": 9, "value": 39, "morning": 6, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 1, "likes": 82}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 1, "likes": 25}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 5, "likes": 105}, "nature": {"count": 1, "likes": 89}, "afternoon": 18}, "Juno": {"summer": 0, "evening": 221, "group": {"count": 135, "likes": 5429}, "winter": 0, "city": {"count": 297, "likes": 13791}, "food": {"count": 130, "likes": 3465}, "spring": 1265, "selfie": {"count": 250, "likes": 11661}, "night": 363, "value": 1265, "morning": 235, "quote": {"count": 94, "likes": 3276}, "fashion": {"count": 86, "likes": 13580}, "flower": {"count": 28, "likes": 553}, "animal": {"count": 45, "likes": 1362}, "fall": 0, "beach": {"count": 19, "likes": 821}, "abstract": {"count": 165, "likes": 5096}, "nature": {"count": 16, "likes": 579}, "afternoon": 446}, "Normal": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 0, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 0, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Kelvin": {"summer": 0, "evening": 2, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 2, "likes": 19}, "food": {"count": 2, "likes": 16}, "spring": 7, "selfie": {"count": 1, "likes": 27}, "night": 2, "value": 7, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 2, "likes": 8}, "nature": {"count": 0, "likes": 0}, "afternoon": 2}, "Rise": {"summer": 0, "evening": 45, "group": {"count": 48, "likes": 1671}, "winter": 0, "city": {"count": 67, "likes": 1867}, "food": {"count": 18, "likes": 583}, "spring": 303, "selfie": {"count": 76, "likes": 4261}, "night": 98, "value": 303, "morning": 80, "quote": {"count": 8, "likes": 198}, "fashion": {"count": 9, "likes": 351}, "flower": {"count": 4, "likes": 89}, "animal": {"count": 25, "likes": 1084}, "fall": 0, "beach": {"count": 6, "likes": 205}, "abstract": {"count": 38, "likes": 1846}, "nature": {"count": 4, "likes": 15}, "afternoon": 80}, "Sutro": {"summer": 0, "evening": 4, "group": {"count": 3, "likes": 419}, "winter": 0, "city": {"count": 4, "likes": 86}, "food": {"count": 1, "likes": 104}, "spring": 16, "selfie": {"count": 3, "likes": 67}, "night": 2, "value": 16, "morning": 2, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 1, "likes": 12}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 2, "likes": 67}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 2, "likes": 18}, "nature": {"count": 0, "likes": 0}, "afternoon": 8}, "Brooklyn": {"summer": 0, "evening": 2, "group": {"count": 1, "likes": 45}, "winter": 0, "city": {"count": 4, "likes": 147}, "food": {"count": 1, "likes": 31}, "spring": 18, "selfie": {"count": 4, "likes": 70}, "night": 9, "value": 18, "morning": 3, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 6, "likes": 347}, "nature": {"count": 2, "likes": 108}, "afternoon": 4}, "Maven": {"summer": 0, "evening": 2, "group": {"count": 1, "likes": 34}, "winter": 0, "city": {"count": 2, "likes": 94}, "food": {"count": 0, "likes": 0}, "spring": 13, "selfie": {"count": 3, "likes": 151}, "night": 4, "value": 13, "morning": 2, "quote": {"count": 2, "likes": 24}, "fashion": {"count": 1, "likes": 2}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 3, "likes": 93}, "nature": {"count": 1, "likes": 19}, "afternoon": 5}, "Clarendon": {"summer": 0, "evening": 644, "group": {"count": 317, "likes": 30213}, "winter": 0, "city": {"count": 731, "likes": 23184}, "food": {"count": 435, "likes": 24276}, "spring": 3308, "selfie": {"count": 588, "likes": 44317}, "night": 872, "value": 3308, "morning": 693, "quote": {"count": 249, "likes": 10216}, "fashion": {"count": 240, "likes": 14033}, "flower": {"count": 81, "likes": 4020}, "animal": {"count": 68, "likes": 4251}, "fall": 0, "beach": {"count": 67, "likes": 2019}, "abstract": {"count": 482, "likes": 20897}, "nature": {"count": 50, "likes": 2024}, "afternoon": 1099}, "Perpetua": {"summer": 0, "evening": 25, "group": {"count": 14, "likes": 799}, "winter": 0, "city": {"count": 43, "likes": 1922}, "food": {"count": 7, "likes": 67}, "spring": 169, "selfie": {"count": 37, "likes": 3774}, "night": 54, "value": 169, "morning": 31, "quote": {"count": 9, "likes": 520}, "fashion": {"count": 5, "likes": 234}, "flower": {"count": 3, "likes": 58}, "animal": {"count": 7, "likes": 148}, "fall": 0, "beach": {"count": 6, "likes": 474}, "abstract": {"count": 33, "likes": 721}, "nature": {"count": 5, "likes": 241}, "afternoon": 59}, "Amaro": {"summer": 0, "evening": 98, "group": {"count": 59, "likes": 2035}, "winter": 0, "city": {"count": 108, "likes": 2506}, "food": {"count": 44, "likes": 1080}, "spring": 459, "selfie": {"count": 104, "likes": 9968}, "night": 143, "value": 459, "morning": 84, "quote": {"count": 13, "likes": 1882}, "fashion": {"count": 22, "likes": 1679}, "flower": {"count": 7, "likes": 119}, "animal": {"count": 23, "likes": 553}, "fall": 0, "beach": {"count": 9, "likes": 229}, "abstract": {"count": 67, "likes": 1244}, "nature": {"count": 3, "likes": 34}, "afternoon": 134}, "Nashville": {"summer": 0, "evening": 39, "group": {"count": 26, "likes": 1333}, "winter": 0, "city": {"count": 29, "likes": 1096}, "food": {"count": 15, "likes": 464}, "spring": 208, "selfie": {"count": 74, "likes": 41230}, "night": 68, "value": 208, "morning": 42, "quote": {"count": 7, "likes": 8482}, "fashion": {"count": 10, "likes": 223}, "flower": {"count": 1, "likes": 22}, "animal": {"count": 6, "likes": 122}, "fall": 0, "beach": {"count": 1, "likes": 45}, "abstract": {"count": 36, "likes": 1157}, "nature": {"count": 3, "likes": 31}, "afternoon": 59}, "Toaster": {"summer": 0, "evening": 1, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 3, "likes": 12}, "food": {"count": 0, "likes": 0}, "spring": 7, "selfie": {"count": 3, "likes": 69}, "night": 1, "value": 7, "morning": 2, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 1, "likes": 34}, "nature": {"count": 0, "likes": 0}, "afternoon": 3}, "Slumber": {"summer": 0, "evening": 60, "group": {"count": 35, "likes": 2486}, "winter": 0, "city": {"count": 37, "likes": 1368}, "food": {"count": 15, "likes": 839}, "spring": 249, "selfie": {"count": 75, "likes": 9423}, "night": 66, "value": 249, "morning": 47, "quote": {"count": 9, "likes": 194}, "fashion": {"count": 16, "likes": 425}, "flower": {"count": 4, "likes": 289}, "animal": {"count": 14, "likes": 341}, "fall": 0, "beach": {"count": 8, "likes": 562}, "abstract": {"count": 27, "likes": 2157}, "nature": {"count": 9, "likes": 214}, "afternoon": 76}, "Dogpatch": {"summer": 0, "evening": 10, "group": {"count": 2, "likes": 65}, "winter": 0, "city": {"count": 11, "likes": 139}, "food": {"count": 8, "likes": 173}, "spring": 38, "selfie": {"count": 6, "likes": 474}, "night": 7, "value": 38, "morning": 7, "quote": {"count": 3, "likes": 81}, "fashion": {"count": 1, "likes": 35}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 1, "likes": 114}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 6, "likes": 423}, "nature": {"count": 0, "likes": 0}, "afternoon": 14}, "Skyline": {"summer": 0, "evening": 7, "group": {"count": 5, "likes": 136}, "winter": 0, "city": {"count": 14, "likes": 764}, "food": {"count": 6, "likes": 164}, "spring": 46, "selfie": {"count": 15, "likes": 711}, "night": 15, "value": 46, "morning": 11, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 1, "likes": 19}, "fall": 0, "beach": {"count": 1, "likes": 128}, "abstract": {"count": 3, "likes": 40}, "nature": {"count": 1, "likes": 12}, "afternoon": 13}, "Charmes": {"summer": 0, "evening": 3, "group": {"count": 1, "likes": 6}, "winter": 0, "city": {"count": 2, "likes": 50}, "food": {"count": 1, "likes": 67}, "spring": 14, "selfie": {"count": 5, "likes": 356}, "night": 4, "value": 14, "morning": 2, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 1, "likes": 47}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 1, "likes": 24}, "fall": 0, "beach": {"count": 2, "likes": 22}, "abstract": {"count": 1, "likes": 3}, "nature": {"count": 0, "likes": 0}, "afternoon": 5}, "Aden": {"summer": 0, "evening": 44, "group": {"count": 40, "likes": 1952}, "winter": 0, "city": {"count": 56, "likes": 4002}, "food": {"count": 12, "likes": 636}, "spring": 286, "selfie": {"count": 96, "likes": 82831}, "night": 103, "value": 286, "morning": 56, "quote": {"count": 8, "likes": 1590}, "fashion": {"count": 19, "likes": 18515}, "flower": {"count": 7, "likes": 98}, "animal": {"count": 11, "likes": 434}, "fall": 0, "beach": {"count": 8, "likes": 186}, "abstract": {"count": 27, "likes": 4395}, "nature": {"count": 2, "likes": 14}, "afternoon": 83}, "Valencia": {"summer": 0, "evening": 94, "group": {"count": 105, "likes": 15483}, "winter": 0, "city": {"count": 74, "likes": 3070}, "food": {"count": 52, "likes": 2510}, "spring": 527, "selfie": {"count": 161, "likes": 29057}, "night": 181, "value": 527, "morning": 96, "quote": {"count": 9, "likes": 262}, "fashion": {"count": 24, "likes": 1440}, "flower": {"count": 8, "likes": 151}, "animal": {"count": 24, "likes": 1146}, "fall": 0, "beach": {"count": 6, "likes": 231}, "abstract": {"count": 59, "likes": 1652}, "nature": {"count": 5, "likes": 204}, "afternoon": 156}, "Gingham": {"summer": 0, "evening": 180, "group": {"count": 121, "likes": 40102}, "winter": 0, "city": {"count": 171, "likes": 11084}, "food": {"count": 99, "likes": 2915}, "spring": 948, "selfie": {"count": 234, "likes": 13235}, "night": 272, "value": 948, "morning": 191, "quote": {"count": 52, "likes": 2841}, "fashion": {"count": 71, "likes": 3119}, "flower": {"count": 12, "likes": 319}, "animal": {"count": 38, "likes": 3087}, "fall": 0, "beach": {"count": 18, "likes": 632}, "abstract": {"count": 122, "likes": 3651}, "nature": {"count": 10, "likes": 449}, "afternoon": 305}, "1977": {"summer": 0, "evening": 2, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 1, "likes": 31}, "food": {"count": 0, "likes": 0}, "spring": 6, "selfie": {"count": 2, "likes": 68}, "night": 2, "value": 6, "morning": 0, "quote": {"count": 2, "likes": 255}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 1, "likes": 44}, "afternoon": 2}, "Lo-fi": {"summer": 0, "evening": 119, "group": {"count": 58, "likes": 2461}, "winter": 0, "city": {"count": 185, "likes": 5786}, "food": {"count": 50, "likes": 2252}, "spring": 660, "selfie": {"count": 97, "likes": 10047}, "night": 165, "value": 660, "morning": 150, "quote": {"count": 44, "likes": 1019}, "fashion": {"count": 35, "likes": 1303}, "flower": {"count": 6, "likes": 2538}, "animal": {"count": 23, "likes": 1383}, "fall": 0, "beach": {"count": 15, "likes": 699}, "abstract": {"count": 133, "likes": 4987}, "nature": {"count": 14, "likes": 783}, "afternoon": 226}, "Inkwell": {"summer": 0, "evening": 83, "group": {"count": 56, "likes": 2892}, "winter": 0, "city": {"count": 99, "likes": 4041}, "food": {"count": 2, "likes": 61}, "spring": 473, "selfie": {"count": 128, "likes": 13064}, "night": 146, "value": 473, "morning": 95, "quote": {"count": 36, "likes": 6405}, "fashion": {"count": 11, "likes": 437}, "flower": {"count": 2, "likes": 80}, "animal": {"count": 20, "likes": 744}, "fall": 0, "beach": {"count": 5, "likes": 243}, "abstract": {"count": 110, "likes": 5568}, "nature": {"count": 4, "likes": 82}, "afternoon": 149}, "X-Pro II": {"summer": 0, "evening": 86, "group": {"count": 40, "likes": 1401}, "winter": 0, "city": {"count": 91, "likes": 3187}, "food": {"count": 18, "likes": 347}, "spring": 392, "selfie": {"count": 95, "likes": 12941}, "night": 117, "value": 392, "morning": 78, "quote": {"count": 27, "likes": 506}, "fashion": {"count": 24, "likes": 529}, "flower": {"count": 8, "likes": 195}, "animal": {"count": 5, "likes": 286}, "fall": 0, "beach": {"count": 10, "likes": 93}, "abstract": {"count": 65, "likes": 3580}, "nature": {"count": 9, "likes": 991}, "afternoon": 111}, "Helena": {"summer": 0, "evening": 3, "group": {"count": 1, "likes": 23}, "winter": 0, "city": {"count": 2, "likes": 52}, "food": {"count": 2, "likes": 81}, "spring": 9, "selfie": {"count": 2, "likes": 407}, "night": 4, "value": 9, "morning": 0, "quote": {"count": 1, "likes": 2}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 1, "likes": 19}, "nature": {"count": 0, "likes": 0}, "afternoon": 2}, "Walden": {"summer": 0, "evening": 1, "group": {"count": 3, "likes": 1383}, "winter": 0, "city": {"count": 1, "likes": 10}, "food": {"count": 1, "likes": 23}, "spring": 10, "selfie": {"count": 4, "likes": 111}, "night": 2, "value": 10, "morning": 2, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 1, "likes": 43}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 5}, "Ginza": {"summer": 0, "evening": 3, "group": {"count": 2, "likes": 62}, "winter": 0, "city": {"count": 2, "likes": 96}, "food": {"count": 4, "likes": 66}, "spring": 12, "selfie": {"count": 1, "likes": 663}, "night": 4, "value": 12, "morning": 2, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 1, "likes": 31}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 2, "likes": 54}, "nature": {"count": 0, "likes": 0}, "afternoon": 3}, "Vesper": {"summer": 0, "evening": 5, "group": {"count": 6, "likes": 261}, "winter": 0, "city": {"count": 1, "likes": 23}, "food": {"count": 1, "likes": 86}, "spring": 21, "selfie": {"count": 7, "likes": 712}, "night": 5, "value": 21, "morning": 7, "quote": {"count": 1, "likes": 9}, "fashion": {"count": 2, "likes": 56}, "flower": {"count": 1, "likes": 39}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 2, "likes": 61}, "nature": {"count": 0, "likes": 0}, "afternoon": 4}}
+	var fil = {"Brannan": {"summer": 0, "evening": 0, "group": {"count": 1, "likes": 7}, "winter": 0, "city": {"count": 1, "likes": 2}, "food": {"count": 0, "likes": 0}, "spring": 3, "selfie": {"count": 1, "likes": 6}, "night": 0, "value": 3, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 2}, "Willow": {"summer": 0, "evening": 3, "group": {"count": 3, "likes": 53}, "winter": 0, "city": {"count": 2, "likes": 96}, "food": {"count": 0, "likes": 0}, "spring": 20, "selfie": {"count": 9, "likes": 255}, "night": 6, "value": 20, "morning": 6, "quote": {"count": 1, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 5, "likes": 33}, "nature": {"count": 0, "likes": 0}, "afternoon": 5}, "Unknown": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1, "selfie": {"count": 1, "likes": 57}, "night": 0, "value": 1, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1}, "Mayfair": {"summer": 0, "evening": 12, "group": {"count": 5, "likes": 54}, "winter": 0, "city": {"count": 15, "likes": 201}, "food": {"count": 15, "likes": 427}, "spring": 81, "selfie": {"count": 12, "likes": 640}, "night": 18, "value": 81, "morning": 20, "quote": {"count": 1, "likes": 3}, "fashion": {"count": 3, "likes": 221}, "flower": {"count": 6, "likes": 72}, "animal": {"count": 3, "likes": 132}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 19, "likes": 1729}, "nature": {"count": 2, "likes": 24}, "afternoon": 31}, "Hudson": {"summer": 0, "evening": 10, "group": {"count": 8, "likes": 142}, "winter": 0, "city": {"count": 4, "likes": 230}, "food": {"count": 1, "likes": 0}, "spring": 27, "selfie": {"count": 5, "likes": 318}, "night": 8, "value": 27, "morning": 4, "quote": {"count": 2, "likes": 15}, "fashion": {"count": 1, "likes": 18}, "flower": {"count": 1, "likes": 256}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 4, "likes": 93}, "nature": {"count": 1, "likes": 30}, "afternoon": 5}, "Moon": {"summer": 0, "evening": 16, "group": {"count": 7, "likes": 226}, "winter": 0, "city": {"count": 9, "likes": 276}, "food": {"count": 3, "likes": 39}, "spring": 53, "selfie": {"count": 15, "likes": 610}, "night": 14, "value": 53, "morning": 7, "quote": {"count": 3, "likes": 37}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 2, "likes": 31}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 11, "likes": 188}, "nature": {"count": 3, "likes": 13}, "afternoon": 16}, "Lark": {"summer": 0, "evening": 39, "group": {"count": 30, "likes": 1375}, "winter": 0, "city": {"count": 34, "likes": 487}, "food": {"count": 36, "likes": 888}, "spring": 205, "selfie": {"count": 25, "likes": 1015}, "night": 40, "value": 205, "morning": 49, "quote": {"count": 7, "likes": 63}, "fashion": {"count": 9, "likes": 160}, "flower": {"count": 13, "likes": 158}, "animal": {"count": 11, "likes": 288}, "fall": 0, "beach": {"count": 1, "likes": 17}, "abstract": {"count": 37, "likes": 532}, "nature": {"count": 2, "likes": 31}, "afternoon": 77}, "Hefe": {"summer": 0, "evening": 18, "group": {"count": 9, "likes": 1093}, "winter": 0, "city": {"count": 8, "likes": 147}, "food": {"count": 8, "likes": 107}, "spring": 68, "selfie": {"count": 11, "likes": 134}, "night": 18, "value": 68, "morning": 10, "quote": {"count": 5, "likes": 51}, "fashion": {"count": 5, "likes": 116}, "flower": {"count": 1, "likes": 4}, "animal": {"count": 3, "likes": 36}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 18, "likes": 345}, "nature": {"count": 0, "likes": 0}, "afternoon": 22}, "Earlybird": {"summer": 0, "evening": 1, "group": {"count": 2, "likes": 13}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 3, "selfie": {"count": 0, "likes": 0}, "night": 1, "value": 3, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 1, "likes": 15}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Crema": {"summer": 0, "evening": 9, "group": {"count": 7, "likes": 366}, "winter": 0, "city": {"count": 4, "likes": 69}, "food": {"count": 4, "likes": 37}, "spring": 27, "selfie": {"count": 7, "likes": 622}, "night": 7, "value": 27, "morning": 6, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 4, "likes": 57}, "nature": {"count": 1, "likes": 46}, "afternoon": 5}, "Sierra": {"summer": 0, "evening": 14, "group": {"count": 12, "likes": 145}, "winter": 0, "city": {"count": 4, "likes": 67}, "food": {"count": 5, "likes": 105}, "spring": 55, "selfie": {"count": 12, "likes": 613}, "night": 10, "value": 55, "morning": 14, "quote": {"count": 2, "likes": 45}, "fashion": {"count": 4, "likes": 66}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 4, "likes": 172}, "fall": 0, "beach": {"count": 2, "likes": 94}, "abstract": {"count": 10, "likes": 186}, "nature": {"count": 0, "likes": 0}, "afternoon": 17}, "Reyes": {"summer": 0, "evening": 11, "group": {"count": 10, "likes": 257}, "winter": 0, "city": {"count": 3, "likes": 197}, "food": {"count": 5, "likes": 72}, "spring": 45, "selfie": {"count": 12, "likes": 285}, "night": 12, "value": 45, "morning": 10, "quote": {"count": 1, "likes": 5}, "fashion": {"count": 3, "likes": 17}, "flower": {"count": 1, "likes": 10}, "animal": {"count": 2, "likes": 13}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 8, "likes": 235}, "nature": {"count": 0, "likes": 0}, "afternoon": 12}, "Ludwig": {"summer": 0, "evening": 32, "group": {"count": 37, "likes": 1330}, "winter": 0, "city": {"count": 10, "likes": 470}, "food": {"count": 47, "likes": 1730}, "spring": 170, "selfie": {"count": 28, "likes": 1698}, "night": 43, "value": 170, "morning": 47, "quote": {"count": 3, "likes": 32}, "fashion": {"count": 4, "likes": 58}, "flower": {"count": 3, "likes": 21}, "animal": {"count": 6, "likes": 198}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 30, "likes": 716}, "nature": {"count": 2, "likes": 70}, "afternoon": 48}, "Stinson": {"summer": 0, "evening": 2, "group": {"count": 1, "likes": 44}, "winter": 0, "city": {"count": 1, "likes": 205}, "food": {"count": 0, "likes": 0}, "spring": 4, "selfie": {"count": 2, "likes": 59}, "night": 0, "value": 4, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 2}, "Ashby": {"summer": 0, "evening": 2, "group": {"count": 2, "likes": 64}, "winter": 0, "city": {"count": 2, "likes": 58}, "food": {"count": 1, "likes": 25}, "spring": 8, "selfie": {"count": 1, "likes": 53}, "night": 6, "value": 8, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 1, "likes": 7}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 1, "likes": 10}, "afternoon": 0}, "Juno": {"summer": 0, "evening": 51, "group": {"count": 29, "likes": 680}, "winter": 0, "city": {"count": 27, "likes": 414}, "food": {"count": 33, "likes": 619}, "spring": 208, "selfie": {"count": 31, "likes": 864}, "night": 38, "value": 208, "morning": 45, "quote": {"count": 13, "likes": 212}, "fashion": {"count": 10, "likes": 192}, "flower": {"count": 11, "likes": 198}, "animal": {"count": 7, "likes": 145}, "fall": 0, "beach": {"count": 1, "likes": 10}, "abstract": {"count": 41, "likes": 989}, "nature": {"count": 5, "likes": 55}, "afternoon": 74}, "Normal": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 0, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 0, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Kelvin": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 0, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 0, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Rise": {"summer": 0, "evening": 15, "group": {"count": 6, "likes": 78}, "winter": 0, "city": {"count": 11, "likes": 283}, "food": {"count": 11, "likes": 182}, "spring": 46, "selfie": {"count": 6, "likes": 154}, "night": 6, "value": 46, "morning": 8, "quote": {"count": 2, "likes": 5}, "fashion": {"count": 2, "likes": 19}, "flower": {"count": 1, "likes": 23}, "animal": {"count": 2, "likes": 71}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 4, "likes": 62}, "nature": {"count": 1, "likes": 4}, "afternoon": 17}, "Sutro": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 1, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 1, "likes": 8}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Brooklyn": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 1, "likes": 10}, "spring": 3, "selfie": {"count": 1, "likes": 18}, "night": 0, "value": 3, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 1, "likes": 18}, "nature": {"count": 0, "likes": 0}, "afternoon": 2}, "Maven": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 0, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 0, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Clarendon": {"summer": 0, "evening": 107, "group": {"count": 60, "likes": 5186}, "winter": 0, "city": {"count": 68, "likes": 1096}, "food": {"count": 123, "likes": 2068}, "spring": 535, "selfie": {"count": 66, "likes": 2737}, "night": 121, "value": 535, "morning": 121, "quote": {"count": 21, "likes": 375}, "fashion": {"count": 33, "likes": 733}, "flower": {"count": 21, "likes": 527}, "animal": {"count": 8, "likes": 146}, "fall": 0, "beach": {"count": 3, "likes": 58}, "abstract": {"count": 120, "likes": 2466}, "nature": {"count": 12, "likes": 494}, "afternoon": 186}, "Perpetua": {"summer": 0, "evening": 3, "group": {"count": 8, "likes": 345}, "winter": 0, "city": {"count": 1, "likes": 9}, "food": {"count": 3, "likes": 171}, "spring": 23, "selfie": {"count": 1, "likes": 14}, "night": 8, "value": 23, "morning": 6, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 2, "likes": 32}, "flower": {"count": 2, "likes": 14}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 4, "likes": 35}, "nature": {"count": 2, "likes": 21}, "afternoon": 6}, "Amaro": {"summer": 0, "evening": 25, "group": {"count": 16, "likes": 1698}, "winter": 0, "city": {"count": 15, "likes": 163}, "food": {"count": 14, "likes": 299}, "spring": 82, "selfie": {"count": 11, "likes": 256}, "night": 24, "value": 82, "morning": 25, "quote": {"count": 3, "likes": 27}, "fashion": {"count": 3, "likes": 58}, "flower": {"count": 5, "likes": 96}, "animal": {"count": 1, "likes": 7}, "fall": 0, "beach": {"count": 1, "likes": 1}, "abstract": {"count": 12, "likes": 273}, "nature": {"count": 1, "likes": 97}, "afternoon": 8}, "Nashville": {"summer": 0, "evening": 7, "group": {"count": 8, "likes": 356}, "winter": 0, "city": {"count": 1, "likes": 20}, "food": {"count": 6, "likes": 120}, "spring": 28, "selfie": {"count": 8, "likes": 606}, "night": 9, "value": 28, "morning": 4, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 1, "likes": 7}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 3, "likes": 26}, "nature": {"count": 1, "likes": 202}, "afternoon": 8}, "Toaster": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1, "selfie": {"count": 1, "likes": 6}, "night": 1, "value": 1, "morning": 0, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Slumber": {"summer": 0, "evening": 7, "group": {"count": 7, "likes": 474}, "winter": 0, "city": {"count": 3, "likes": 47}, "food": {"count": 3, "likes": 3361}, "spring": 32, "selfie": {"count": 8, "likes": 451}, "night": 10, "value": 32, "morning": 5, "quote": {"count": 1, "likes": 13}, "fashion": {"count": 2, "likes": 39}, "flower": {"count": 1, "likes": 14}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 6, "likes": 223}, "nature": {"count": 1, "likes": 1}, "afternoon": 10}, "Dogpatch": {"summer": 0, "evening": 0, "group": {"count": 2, "likes": 97}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 3, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 3, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 1, "likes": 10}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 2}, "Skyline": {"summer": 0, "evening": 2, "group": {"count": 1, "likes": 36}, "winter": 0, "city": {"count": 2, "likes": 39}, "food": {"count": 0, "likes": 0}, "spring": 5, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 5, "morning": 3, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 2, "likes": 41}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Charmes": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 2, "selfie": {"count": 1, "likes": 27}, "night": 0, "value": 2, "morning": 2, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 1, "likes": 23}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Aden": {"summer": 0, "evening": 12, "group": {"count": 7, "likes": 224}, "winter": 0, "city": {"count": 3, "likes": 84}, "food": {"count": 3, "likes": 43}, "spring": 35, "selfie": {"count": 14, "likes": 1168}, "night": 13, "value": 35, "morning": 5, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 2, "likes": 36}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 1, "likes": 53}, "abstract": {"count": 5, "likes": 70}, "nature": {"count": 0, "likes": 0}, "afternoon": 5}, "Valencia": {"summer": 0, "evening": 12, "group": {"count": 20, "likes": 507}, "winter": 0, "city": {"count": 7, "likes": 171}, "food": {"count": 7, "likes": 93}, "spring": 72, "selfie": {"count": 13, "likes": 232}, "night": 24, "value": 72, "morning": 13, "quote": {"count": 3, "likes": 51}, "fashion": {"count": 4, "likes": 69}, "flower": {"count": 2, "likes": 49}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 1, "likes": 24}, "abstract": {"count": 12, "likes": 199}, "nature": {"count": 3, "likes": 77}, "afternoon": 23}, "Gingham": {"summer": 0, "evening": 33, "group": {"count": 32, "likes": 1441}, "winter": 0, "city": {"count": 19, "likes": 69297}, "food": {"count": 30, "likes": 625}, "spring": 160, "selfie": {"count": 29, "likes": 2270}, "night": 44, "value": 160, "morning": 36, "quote": {"count": 3, "likes": 46}, "fashion": {"count": 6, "likes": 202}, "flower": {"count": 6, "likes": 322}, "animal": {"count": 7, "likes": 159}, "fall": 0, "beach": {"count": 2, "likes": 48}, "abstract": {"count": 22, "likes": 537}, "nature": {"count": 4, "likes": 513}, "afternoon": 47}, "1977": {"summer": 0, "evening": 1, "group": {"count": 1, "likes": 34}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 1, "likes": 7}, "spring": 2, "selfie": {"count": 0, "likes": 0}, "night": 0, "value": 2, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Lo-fi": {"summer": 0, "evening": 18, "group": {"count": 11, "likes": 590}, "winter": 0, "city": {"count": 15, "likes": 289}, "food": {"count": 11, "likes": 336}, "spring": 87, "selfie": {"count": 12, "likes": 630}, "night": 19, "value": 87, "morning": 19, "quote": {"count": 2, "likes": 12}, "fashion": {"count": 5, "likes": 38}, "flower": {"count": 5, "likes": 115}, "animal": {"count": 2, "likes": 6371}, "fall": 0, "beach": {"count": 1, "likes": 8}, "abstract": {"count": 21, "likes": 519}, "nature": {"count": 2, "likes": 45}, "afternoon": 31}, "Inkwell": {"summer": 0, "evening": 3, "group": {"count": 7, "likes": 184}, "winter": 0, "city": {"count": 4, "likes": 76}, "food": {"count": 2, "likes": 60}, "spring": 37, "selfie": {"count": 12, "likes": 1546}, "night": 14, "value": 37, "morning": 7, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 3, "likes": 42}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 1, "likes": 5}, "fall": 0, "beach": {"count": 1, "likes": 110}, "abstract": {"count": 6, "likes": 188}, "nature": {"count": 1, "likes": 26}, "afternoon": 13}, "X-Pro II": {"summer": 0, "evening": 11, "group": {"count": 13, "likes": 416}, "winter": 0, "city": {"count": 11, "likes": 111}, "food": {"count": 9, "likes": 133}, "spring": 75, "selfie": {"count": 17, "likes": 2425}, "night": 19, "value": 75, "morning": 18, "quote": {"count": 5, "likes": 87}, "fashion": {"count": 4, "likes": 87}, "flower": {"count": 2, "likes": 13}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 1, "likes": 28}, "abstract": {"count": 11, "likes": 363}, "nature": {"count": 2, "likes": 10}, "afternoon": 27}, "Helena": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1, "selfie": {"count": 1, "likes": 37}, "night": 0, "value": 1, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Walden": {"summer": 0, "evening": 0, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 1, "likes": 4}, "spring": 4, "selfie": {"count": 0, "likes": 0}, "night": 1, "value": 4, "morning": 3, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 1, "likes": 3}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 2, "likes": 15}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Ginza": {"summer": 0, "evening": 2, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 1, "likes": 24}, "food": {"count": 1, "likes": 17}, "spring": 6, "selfie": {"count": 1, "likes": 115}, "night": 3, "value": 6, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 1, "likes": 1}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 2, "likes": 39}, "nature": {"count": 0, "likes": 0}, "afternoon": 0}, "Vesper": {"summer": 0, "evening": 1, "group": {"count": 0, "likes": 0}, "winter": 0, "city": {"count": 0, "likes": 0}, "food": {"count": 1, "likes": 8}, "spring": 6, "selfie": {"count": 1, "likes": 4}, "night": 1, "value": 6, "morning": 1, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 1, "likes": 8}, "fall": 0, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 3, "likes": 69}, "nature": {"count": 0, "likes": 0}, "afternoon": 3}}
 
+	var filSeason = {"Brannan": {"summer": 110, "evening": 131, "group": {"count": 0, "likes": 0}, "winter": 193, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 240, "selfie": {"count": 0, "likes": 0}, "night": 143, "value": 592, "morning": 135, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 49, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 183}, "Willow": {"summer": 157, "evening": 263, "group": {"count": 0, "likes": 0}, "winter": 481, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 420, "selfie": {"count": 0, "likes": 0}, "night": 432, "value": 1298, "morning": 249, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 240, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 354}, "Unknown": {"summer": 11, "evening": 16, "group": {"count": 0, "likes": 0}, "winter": 38, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 33, "selfie": {"count": 0, "likes": 0}, "night": 30, "value": 94, "morning": 14, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 12, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 34}, "Mayfair": {"summer": 775, "evening": 1256, "group": {"count": 0, "likes": 0}, "winter": 2117, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 2332, "selfie": {"count": 0, "likes": 0}, "night": 1380, "value": 6206, "morning": 1515, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 982, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 2055}, "Hudson": {"summer": 395, "evening": 699, "group": {"count": 0, "likes": 0}, "winter": 1178, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1175, "selfie": {"count": 0, "likes": 0}, "night": 783, "value": 3247, "morning": 770, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 499, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 995}, "Moon": {"summer": 27, "evening": 346, "group": {"count": 0, "likes": 0}, "winter": 879, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 320, "selfie": {"count": 0, "likes": 0}, "night": 505, "value": 1835, "morning": 420, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 609, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 564}, "Lark": {"summer": 2315, "evening": 2464, "group": {"count": 0, "likes": 0}, "winter": 2919, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 3764, "selfie": {"count": 0, "likes": 0}, "night": 2516, "value": 11889, "morning": 2919, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 2891, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 3990}, "Hefe": {"summer": 456, "evening": 724, "group": {"count": 0, "likes": 0}, "winter": 1283, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1228, "selfie": {"count": 0, "likes": 0}, "night": 927, "value": 3716, "morning": 878, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 749, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1187}, "Earlybird": {"summer": 238, "evening": 280, "group": {"count": 0, "likes": 0}, "winter": 427, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 507, "selfie": {"count": 0, "likes": 0}, "night": 409, "value": 1282, "morning": 293, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 110, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 300}, "Crema": {"summer": 567, "evening": 1096, "group": {"count": 0, "likes": 0}, "winter": 1948, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 2281, "selfie": {"count": 0, "likes": 0}, "night": 1337, "value": 5396, "morning": 1247, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 600, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1716}, "Sierra": {"summer": 433, "evening": 785, "group": {"count": 0, "likes": 0}, "winter": 1274, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1268, "selfie": {"count": 0, "likes": 0}, "night": 1002, "value": 3654, "morning": 794, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 679, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1073}, "Reyes": {"summer": 721, "evening": 600, "group": {"count": 0, "likes": 0}, "winter": 615, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1022, "selfie": {"count": 0, "likes": 0}, "night": 746, "value": 2946, "morning": 680, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 588, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 920}, "Ludwig": {"summer": 1830, "evening": 3185, "group": {"count": 0, "likes": 0}, "winter": 5282, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 6132, "selfie": {"count": 0, "likes": 0}, "night": 3623, "value": 15503, "morning": 3582, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 2259, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 5113}, "Stinson": {"summer": 1, "evening": 13, "group": {"count": 0, "likes": 0}, "winter": 43, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 15, "selfie": {"count": 0, "likes": 0}, "night": 21, "value": 71, "morning": 15, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 12, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 22}, "Ashby": {"summer": 1, "evening": 42, "group": {"count": 0, "likes": 0}, "winter": 80, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 47, "selfie": {"count": 0, "likes": 0}, "night": 43, "value": 176, "morning": 41, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 48, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 50}, "Juno": {"summer": 2746, "evening": 2585, "group": {"count": 0, "likes": 0}, "winter": 2943, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 3926, "selfie": {"count": 0, "likes": 0}, "night": 2640, "value": 12220, "morning": 2920, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 2605, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 4075}, "Normal": {"summer": 23985, "evening": 36997, "group": {"count": 0, "likes": 0}, "winter": 67534, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 64175, "selfie": {"count": 0, "likes": 0}, "night": 41521, "value": 193038, "morning": 50094, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 37344, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 64426}, "Kelvin": {"summer": 23, "evening": 45, "group": {"count": 0, "likes": 0}, "winter": 60, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 52, "selfie": {"count": 0, "likes": 0}, "night": 40, "value": 151, "morning": 31, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 16, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 35}, "Rise": {"summer": 581, "evening": 1092, "group": {"count": 0, "likes": 0}, "winter": 1748, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1833, "selfie": {"count": 0, "likes": 0}, "night": 1287, "value": 5127, "morning": 1206, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 965, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1542}, "Sutro": {"summer": 22, "evening": 56, "group": {"count": 0, "likes": 0}, "winter": 87, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 66, "selfie": {"count": 0, "likes": 0}, "night": 65, "value": 192, "morning": 30, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 17, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 41}, "Brooklyn": {"summer": 0, "evening": 8, "group": {"count": 0, "likes": 0}, "winter": 24, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 12, "selfie": {"count": 0, "likes": 0}, "night": 15, "value": 45, "morning": 10, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 9, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 12}, "Maven": {"summer": 0, "evening": 9, "group": {"count": 0, "likes": 0}, "winter": 16, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 7, "selfie": {"count": 0, "likes": 0}, "night": 9, "value": 30, "morning": 5, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 7, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 7}, "Clarendon": {"summer": 189, "evening": 3393, "group": {"count": 0, "likes": 0}, "winter": 7964, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 3665, "selfie": {"count": 0, "likes": 0}, "night": 3270, "value": 17515, "morning": 4280, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 5697, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 6572}, "Perpetua": {"summer": 294, "evening": 479, "group": {"count": 0, "likes": 0}, "winter": 761, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 912, "selfie": {"count": 0, "likes": 0}, "night": 532, "value": 2350, "morning": 581, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 383, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 758}, "Amaro": {"summer": 932, "evening": 1770, "group": {"count": 0, "likes": 0}, "winter": 2871, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 2846, "selfie": {"count": 0, "likes": 0}, "night": 2014, "value": 7913, "morning": 1775, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 1264, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 2354}, "Nashville": {"summer": 335, "evening": 499, "group": {"count": 0, "likes": 0}, "winter": 888, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 862, "selfie": {"count": 0, "likes": 0}, "night": 671, "value": 2565, "morning": 612, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 480, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 783}, "Toaster": {"summer": 5, "evening": 15, "group": {"count": 0, "likes": 0}, "winter": 55, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 21, "selfie": {"count": 0, "likes": 0}, "night": 27, "value": 88, "morning": 18, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 7, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 28}, "Slumber": {"summer": 505, "evening": 728, "group": {"count": 0, "likes": 0}, "winter": 1207, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1327, "selfie": {"count": 0, "likes": 0}, "night": 903, "value": 3653, "morning": 867, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 614, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1155}, "Dogpatch": {"summer": 0, "evening": 11, "group": {"count": 0, "likes": 0}, "winter": 39, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 16, "selfie": {"count": 0, "likes": 0}, "night": 14, "value": 66, "morning": 14, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 11, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 27}, "Skyline": {"summer": 1, "evening": 26, "group": {"count": 0, "likes": 0}, "winter": 92, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 52, "selfie": {"count": 0, "likes": 0}, "night": 47, "value": 177, "morning": 39, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 32, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 65}, "Charmes": {"summer": 1, "evening": 7, "group": {"count": 0, "likes": 0}, "winter": 22, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 9, "selfie": {"count": 0, "likes": 0}, "night": 19, "value": 50, "morning": 10, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 18, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 14}, "Aden": {"summer": 454, "evening": 742, "group": {"count": 0, "likes": 0}, "winter": 1268, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1393, "selfie": {"count": 0, "likes": 0}, "night": 1007, "value": 3656, "morning": 779, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 541, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1128}, "Valencia": {"summer": 953, "evening": 1562, "group": {"count": 0, "likes": 0}, "winter": 2647, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 2662, "selfie": {"count": 0, "likes": 0}, "night": 2040, "value": 7511, "morning": 1614, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 1249, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 2295}, "Gingham": {"summer": 66, "evening": 1048, "group": {"count": 0, "likes": 0}, "winter": 2448, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1052, "selfie": {"count": 0, "likes": 0}, "night": 1239, "value": 5403, "morning": 1310, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 1837, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1806}, "1977": {"summer": 16, "evening": 26, "group": {"count": 0, "likes": 0}, "winter": 43, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 58, "selfie": {"count": 0, "likes": 0}, "night": 38, "value": 125, "morning": 26, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 8, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 35}, "Lo-fi": {"summer": 853, "evening": 1352, "group": {"count": 0, "likes": 0}, "winter": 2390, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 2384, "selfie": {"count": 0, "likes": 0}, "night": 1474, "value": 6727, "morning": 1594, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 1100, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 2307}, "Inkwell": {"summer": 272, "evening": 526, "group": {"count": 0, "likes": 0}, "winter": 967, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 776, "selfie": {"count": 0, "likes": 0}, "night": 765, "value": 2551, "morning": 561, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 536, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 699}, "X-Pro II": {"summer": 644, "evening": 1134, "group": {"count": 0, "likes": 0}, "winter": 2004, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 1915, "selfie": {"count": 0, "likes": 0}, "night": 1459, "value": 5518, "morning": 1261, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 955, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 1664}, "Helena": {"summer": 0, "evening": 13, "group": {"count": 0, "likes": 0}, "winter": 40, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 12, "selfie": {"count": 0, "likes": 0}, "night": 19, "value": 70, "morning": 17, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 18, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 21}, "Walden": {"summer": 34, "evening": 43, "group": {"count": 0, "likes": 0}, "winter": 133, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 131, "selfie": {"count": 0, "likes": 0}, "night": 104, "value": 323, "morning": 82, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 25, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 94}, "Ginza": {"summer": 0, "evening": 20, "group": {"count": 0, "likes": 0}, "winter": 52, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 18, "selfie": {"count": 0, "likes": 0}, "night": 29, "value": 91, "morning": 17, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 21, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 25}, "Vesper": {"summer": 0, "evening": 20, "group": {"count": 0, "likes": 0}, "winter": 39, "city": {"count": 0, "likes": 0}, "food": {"count": 0, "likes": 0}, "spring": 21, "selfie": {"count": 0, "likes": 0}, "night": 22, "value": 78, "morning": 10, "quote": {"count": 0, "likes": 0}, "fashion": {"count": 0, "likes": 0}, "flower": {"count": 0, "likes": 0}, "animal": {"count": 0, "likes": 0}, "fall": 18, "beach": {"count": 0, "likes": 0}, "abstract": {"count": 0, "likes": 0}, "nature": {"count": 0, "likes": 0}, "afternoon": 26}};
 
 	dayFormat = new Array();
-	for (var d in fil) {
-	if (d == "Clarendon" || d == "Ludwig" ){
-//                console.log(d , +fil[d].value, +fil[d].morning, +fil[d].afternoon, +fil[d].evening, +fil[d].night);
-
-			dayFormat.push({"per" : "Afternoon"  ,"name": d, "val": +fil[d].afternoon});
-			dayFormat.push({"per" : "Evening"  ,"name": d, "val": +fil[d].evening});
-			dayFormat.push({"per" : "Morning" ,"name": d, "val": +fil[d].morning});
-			dayFormat.push({"per" : "Night"  ,"name": d, "val": +fil[d].night});
-			}
-	};
-
-
-	var visualization = d3plus.viz()
+	var visualizationA = d3plus.viz()
     .container("#viz1")
     .data(dayFormat)
     .id(["name", "per"])
@@ -248,155 +258,28 @@ $.ajax({
     .type("radar")
     .draw();
 
+		seasonFormat = new Array();
+		var visualizationB = d3plus.viz()
+	    .container("#viz2")
+	    .data(seasonFormat)
+	    .id(["name", "per"])
+	    .size("val")
+	    .type("radar")
+	    .draw();
 
 
-	// d3.csv("static/data/Washington.csv", function(error, data) {
-	// 		if (error) throw error;
-	//
-	// 		data.forEach(d => {
-	//
-	//
-	// 				if (d.filter != "Normal" && fil[d.filter] != null) {
-	// 						fil[d.filter].value += 1;
-	// 						if(dayTime(+d.createdtime) == 1)
-	// 								fil[d.filter].morning += 1;
-	// 						else if(dayTime(+d.createdtime) == 2)
-	// 								fil[d.filter].afternoon += 1;
-	// 						else if(dayTime(+d.createdtime) == 3)
-	// 								fil[d.filter].evening += 1;
-	// 						else if(dayTime(+d.createdtime) == 4)
-	// 								fil[d.filter].night += 1;
-	//
-	// 						if(yearTime(+d.createdtime) == 1)
-	// 								fil[d.filter].spring += 1;
-	// 						else if(yearTime(+d.createdtime) == 2)
-	// 								fil[d.filter].summer += 1;
-	// 						else if(yearTime(+d.createdtime) == 3)
-	// 								fil[d.filter].fall += 1;
-	// 						else if(yearTime(+d.createdtime) == 4)
-	// 								fil[d.filter].winter += 1;
-	// 				}
-	//
-	//
-	// 		});
+			popularityFormat = new Array();
+			var visualizationC = d3plus.viz()
+					.container("#viz")
+					.data(popularityFormat)
+					.type("bar")
+					.id("name")
+					.color("name")
+					.legend({"size": 50})
+					.y("Filter Popularity")
+					.x("Object Class")
+			.draw()
 
-	// 		var sample_data = [
-  //   {"name": "alpha", "skill": "power", "value": 4},
-  //   {"name": "alpha", "skill": "courage", "value": 8},
-  //   {"name": "alpha", "skill": "wisdom", "value": 2},
-  //   {"name": "beta", "skill": "power", "value": 5},
-  //   {"name": "beta", "skill": "courage", "value": 4},
-  //   {"name": "beta", "skill": "wisdom", "value": 6}
-  // ];
-  // var visualization = d3plus.viz()
-  //   .container("#viz")
-  //   .data(sample_data)
-  //   .id(["name", "skill"])
-  //   .size("value")
-  //   .type("radar")
-  //   .draw();
-
-// 			dayFormat = new Array();
-// 			for (var d in fil) {
-// 			if (d == "Clarendon" || d == "Ludwig" || d == "Juno" || d == "Lark" || d == "Amaro" || d == "Valencia" || d == "Lo-fi"){
-// //                console.log(d , +fil[d].value, +fil[d].morning, +fil[d].afternoon, +fil[d].evening, +fil[d].night);
-//
-// 					dayFormat.push({"Period of Day" : "Afternoon"  ,"name": d, "No of images": +fil[d].afternoon});
-// 					dayFormat.push({"Period of Day" : "Evening"  ,"name": d, "No of images": +fil[d].evening});
-// 					dayFormat.push({"Period of Day" : "Morning" ,"name": d, "No of images": +fil[d].morning});
-// 					dayFormat.push({"Period of Day" : "Night"  ,"name": d, "No of images": +fil[d].night});
-// 					}
-// 			};
-//
-//
-// 			var visualization = d3plus.viz()
-// 					.container("#viz1")
-// 					.data(dayFormat)
-// 					.type("bar")
-// 					.id("name")
-// 					.y("No of images")
-// 					.x("Period of Day")
-// 					.draw()
-		// d3.json('./static/preprocessed.json', function(error, json) {
-    //             if (error)  return console.warn(error);
-    //         fil=json;
-    //         console.log(fil)
-		// 	format = new Array();
-		// 	for (var d in fil) {
-		// 			format.push({"name": d, "value": +fil[d].value});
-		// 	};
-		//
-		//
-		// 	d3plus.viz()
-		// 			.container("#viz")
-		// 			.data(format)
-		// 			.type("bar")
-		// 			.id("name")
-		// 			.x("name")
-		// 			.y("value")
-		// 			.draw()
-
-// 			dayFormat = new Array();
-// 			for (var d in fil) {
-// 			if (d == "Clarendon" || d == "Ludwig" || d == "Juno" || d == "Lark" || d == "Amaro" || d == "Valencia" || d == "Lo-fi"){
-// //                console.log(d , +fil[d].value, +fil[d].morning, +fil[d].afternoon, +fil[d].evening, +fil[d].night);
-//
-// 					dayFormat.push({"Period of Day" : "Afternoon"  ,"name": d, "No of images": +fil[d].afternoon});
-// 					dayFormat.push({"Period of Day" : "Evening"  ,"name": d, "No of images": +fil[d].evening});
-// 					dayFormat.push({"Period of Day" : "Morning" ,"name": d, "No of images": +fil[d].morning});
-// 					dayFormat.push({"Period of Day" : "Night"  ,"name": d, "No of images": +fil[d].night});
-// 					}
-// 			};
-//
-//
-// 			var visualization = d3plus.viz()
-// 					.container("#viz1")
-// 					.data(dayFormat)
-// 					.type("bar")
-// 					.id("name")
-// 					.y("No of images")
-// 					.x("Period of Day")
-// 					.draw()
-//
-// 			 seasonFormat = new Array();
-// 			for (var d in fil) {
-// 			if (d == "Clarendon" || d == "Ludwig" || d == "Juno" || d == "Lark" || d == "Amaro" || d == "Valencia" || d == "Lo-fi"){
-// 					console.log(d , +fil[d].value, +fil[d].fall, +fil[d].spring, +fil[d].summer, +fil[d].winter);
-//
-// 					seasonFormat.push({"Period of Year" : "Fall"  ,"name": d, "No of images": +fil[d].fall});
-// 					seasonFormat.push({"Period of Year" : "Spring"  ,"name": d, "No of images": +fil[d].spring});
-// 					seasonFormat.push({"Period of Year" : "Summer" ,"name": d, "No of images": +fil[d].summer});
-// 					seasonFormat.push({"Period of Year" : "Winter"  ,"name": d, "No of images": +fil[d].winter});
-// 					}
-// 			};
-//
-// 			var visualization = d3plus.viz()
-// 					.container("#viz2")
-// 					.data(seasonFormat)
-// 					.type("bar")
-// 					.id("name")
-// 					// .color("name")
-// 					// .legend({"size": 40})
-// 					.y("No of images")
-// 					.x("Period of Year")
-// 			.draw()
-//
-//
-// 	});
-
-	function dayTime(UNIX_timestamp){
-			var a = new Date(UNIX_timestamp * 1000);
-					var phase = {1:4, 2:4, 3:4, 4:4, 5:1, 6:1, 7:1, 8:1, 9:1, 10:1, 11:1, 12:1, 13:2, 14:2, 15:2, 16:2, 17:2, 18:3, 19:3, 20:3, 21:4, 22:4, 23:4, 0:4};
-			var hour = phase[a.getHours()];
-			return hour;
-	}
-
-		 function yearTime(UNIX_timestamp){
-			var a = new Date(UNIX_timestamp * 1000);
-			var phase = {1:4, 2:4, 3:1, 4:1, 5:1, 6:1, 7:2, 8:2, 9:3, 10:3, 11:3, 12:4};
-			var month = phase[a.getMonth()];
-			return month;
-	}
 </script>
 
 </body>

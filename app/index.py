@@ -15,7 +15,7 @@ def hello():
 
 @app.route('/visualize')
 def visualize():
-    return render_template('visualize_it.html')
+    return render_template('visualizeSeq.html')
 
 @app.route('/instagram')
 def instagram():
@@ -55,7 +55,7 @@ def recommend():
     param = [imageClass, createdTime]
     x = resultFilter.getRecommendations(param)
     print x
-    result = ['vintage', 'lomo', 'clarity','sunrise']
+    result = ['Clarendon', 'Ludwig', 'Lark','Juno']
     return json.dumps({"suggestions" : result})
 
 if __name__ == "__main__":
