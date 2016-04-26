@@ -61,7 +61,7 @@
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="#">Filter Recommendation</a>
+						<a class="navbar-brand" href="/">Filter Recommendation</a>
 				</div>
 
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -81,57 +81,21 @@
 
       <div class="col s7">
 
-				<div class="card small">
-            <div id="imgHolder" class="card-image">
-              <img id="preset-example" src="static/images/test.jpg" data-caman-hidpi="static/images/test.jpg">
+				<!-- <div class="card small"> -->
+            <div id="imgHolder">
+              <img id="preset-example" class="z-depth-4" src="static/images/test.jpg" data-caman-hidpi="static/images/test.jpg">
             </div>
-            <div class="card-action">
+            <div >
 							<a id="getImage" class="waves-effect waves-light btn deep-purple"><i class="material-icons left">add_a_photo</i>Get Image</a>
-							<a id="recommendation" class="waves-effect waves-light btn deep-purple" style="float:right;"><i class="material-icons left">thumb_up</i>Show Recommendations</a>
+							<a id="recommendation" class="waves-effect waves-light btn deep-purple"><i class="material-icons left">thumb_up</i>Show Recommendations</a>
 
             </div>
-          </div>
+          <!-- </div> -->
 
 				<div class="card hoverable">
 					<div class="card-content">
 						<h6>Recommendations</h6>
 						<div id="PresetFilters" style="padding-top: 20px; height: 70px;">
-
-					    <!-- <a data-preset="vintage">Vintage</a>
-
-					    <a data-preset="lomo">Lomo</a>
-
-					    <a data-preset="clarity">Clarity</a>
-
-					    <a data-preset="sinCity">Sin City</a>
-
-					    <a data-preset="sunrise">Sunrise</a>
-
-					    <a data-preset="crossProcess">Cross Process</a>
-
-					    <a data-preset="orangePeel">Orange Peel</a>
-
-					    <a data-preset="love">Love</a>
-
-					    <a data-preset="grungy">Grungy</a>
-
-					    <a data-preset="jarques">Jarques</a>
-
-					    <a data-preset="pinhole">Pinhole</a>
-
-					    <a data-preset="oldBoot">Old Boot</a>
-
-					    <a data-preset="glowingSun">Glowing Sun</a>
-
-					    <a data-preset="hazyDays">Hazy Days</a>
-
-					    <a data-preset="herMajesty">Her Majesty</a>
-
-					    <a data-preset="nostalgia">Nostalgia</a>
-
-					    <a data-preset="hemingway">Hemingway</a>
-
-					    <a data-preset="concentrate">Concentrate</a> -->
 					  </div>
 					</div>
 				</div>
@@ -141,7 +105,7 @@
 
 				<div id="popularity" class="card hoverable">
 					<div class="card-content">
-						<h5>Popularity of the filters</h5>
+						<h5>Popularity based on the category</h5>
 						<div id="viz" style="height: 450px"></div>
 					</div>
 
@@ -151,14 +115,14 @@
       <div class="col s5">
 					<div id="day" class="card hoverable">
 						<div class="card-content">
-              <h5>Usage based on period of the day.</h5>
+              <h5>Usage based on time of the day</h5>
 							<div id="viz1" style="height: 350px"></div>
             </div>
           </div>
 
 					<div id="season" class="card hoverable">
 						<div class="card-content">
-              <h5>Usage based on season of the year.</h5>
+              <h5>Usage based on season of the year</h5>
 							<div id="viz2" style="height: 350px"></div>
             </div>
           </div>
